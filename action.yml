@@ -6,12 +6,3 @@ outputs:
 runs:
     using: node20
     main: "build/index.js"
-inputs:
-    before:
-        description: "The starting commit."
-        required: false
-        default: ${{ github.event.before }}
-    after:
-        description: "The ending commit."
-        required: false
-        default: ${{ github.event.after }}
