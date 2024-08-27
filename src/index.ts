@@ -23,37 +23,42 @@ async function run() {
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
 
-    const { after, before } = github.context.payload;
-    const boundary = `${crypto.randomBytes(16).toString("hex")}`;
-    const output = execSync(
-        `git log --pretty=format:'%H %B${boundary}' ${after}..${before}`,
-    ).toString();
-
-    core.debug(`Output: ${output}`);
-
     const commits: Commit[] = [];
 
-    for (const commit of output.split(boundary)) {
-        if (!commit.trim()) {
-            continue;
+    if (github.context.payload.commits?.length === 1) {
+        const { message, id } = github.context.payload.commits[0];
+        commits.push({ sha: id, message });
+    } else {
+        const { after, before } = github.context.payload;
+        const boundary = `${crypto.randomBytes(16).toString("hex")}`;
+        const output = execSync(
+            `git log --pretty=format:'%H %B${boundary}' ${after}..${before}`,
+        ).toString();
+
+        core.debug(`Output: ${output}`);
+
+        for (const commit of output.split(boundary)) {
+            if (!commit.trim()) {
+                continue;
+            }
+
+            const space = commit.indexOf(" ");
+
+            if (space === -1) {
+                core.error("Failed to parse commit: " + commit);
+                continue;
+            }
+
+            const sha = commit.slice(0, space);
+            const message = commit.slice(space + 1).trim();
+
+            if (!sha || !message) {
+                core.error("Failed to parse commit: " + commit);
+                continue;
+            }
+
+            commits.push({ sha, message });
         }
-
-        const space = commit.indexOf(" ");
-
-        if (space === -1) {
-            core.error("Failed to parse commit: " + commit);
-            continue;
-        }
-
-        const sha = commit.slice(0, space);
-        const message = commit.slice(space + 1).trim();
-
-        if (!sha || !message) {
-            core.error("Failed to parse commit: " + commit);
-            continue;
-        }
-
-        commits.push({ sha, message });
     }
 
     if (commits.length === 0) {
