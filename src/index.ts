@@ -9,7 +9,7 @@ async function run() {
     const commits = JSON.parse(
         "[" +
             execSync(
-                `git log --pretty=format:'{"sha":"%H","message":"%s"},' ${github.context.event.before}`,
+                `git log --pretty=format:'{"sha":"%H","message":"%s"},' ${""}`,
             )
                 .toString()
                 .slice(0, -1) +
