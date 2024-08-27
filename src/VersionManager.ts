@@ -1,6 +1,4 @@
-import { readFile, writeFile } from "fs/promises";
 import * as semver from "semver";
-import * as core from "@actions/core";
 
 export type Commit = {
     message: string;

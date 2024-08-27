@@ -1,9 +1,7 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
-import { execSync } from "child_process";
 import VersionManager, { Commit } from "./VersionManager";
 import { readFile, writeFile } from "fs/promises";
-import * as crypto from "crypto";
 
 type VersionManagerModule = {
     resolver?: (versionManager: VersionManager) => string | Promise<string>;
