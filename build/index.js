@@ -33764,7 +33764,7 @@ async function run() {
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
     const commits = github.context.payload.commits.map((commit) => ({
         message: commit.message,
-        sha: commit.id,
+        id: commit.id,
     }));
     if (commits.length === 0) {
         core.info("No new commits found.");

@@ -25,7 +25,7 @@ async function run() {
     const commits: Commit[] = github.context.payload.commits.map(
         (commit: Commit) => ({
             message: commit.message,
-            sha: commit.id,
+            id: commit.id,
         }),
     );
 
