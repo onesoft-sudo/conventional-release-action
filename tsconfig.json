@@ -3,12 +3,11 @@
         // Enable latest features
         "lib": ["ESNext", "DOM"],
         "target": "ESNext",
-        "module": "NodeNext",
+        "module": "CommonJS",
         "moduleDetection": "force",
 
         // Bundler mode
-        "moduleResolution": "NodeNext",
-        "verbatimModuleSyntax": true,
+        "moduleResolution": "Node",
 
         // Best practices
         "strict": true,
