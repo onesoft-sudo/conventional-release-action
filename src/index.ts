@@ -22,44 +22,12 @@ async function run() {
         core.getInput("version-json-file") || "package.json";
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
-
-    const commits: Commit[] = [];
-
-    if (github.context.payload.commits?.length === 1) {
-        const { message, id } = github.context.payload.commits[0];
-        commits.push({ sha: id, message });
-    } else {
-        const { after, before } = github.context.payload;
-        const boundary = `${crypto.randomBytes(16).toString("hex")}`;
-        const output = execSync(
-            `git log --pretty=format:'%H %B${boundary}' ${after}..${before}`,
-        ).toString();
-
-        core.debug(`Output: ${output}`);
-
-        for (const commit of output.split(boundary)) {
-            if (!commit.trim()) {
-                continue;
-            }
-
-            const space = commit.indexOf(" ");
-
-            if (space === -1) {
-                core.error("Failed to parse commit: " + commit);
-                continue;
-            }
-
-            const sha = commit.slice(0, space);
-            const message = commit.slice(space + 1).trim();
-
-            if (!sha || !message) {
-                core.error("Failed to parse commit: " + commit);
-                continue;
-            }
-
-            commits.push({ sha, message });
-        }
-    }
+    const commits: Commit[] = github.context.payload.commits.map(
+        (commit: Commit) => ({
+            message: commit.message,
+            sha: commit.id,
+        }),
+    );
 
     if (commits.length === 0) {
         core.info("No new commits found.");
@@ -69,7 +37,7 @@ async function run() {
     core.info("New commits found:");
 
     for (const commit of commits) {
-        core.info(`- ${commit.sha}: ${commit.message}`);
+        core.info(`- ${commit.id}: ${commit.message}`);
     }
 
     const versionManager = new VersionManager();

@@ -31872,14 +31872,6 @@ module.exports = require("buffer");
 
 /***/ }),
 
-/***/ 2081:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("child_process");
-
-/***/ }),
-
 /***/ 6206:
 /***/ ((module) => {
 
@@ -33760,10 +33752,8 @@ var exports = __webpack_exports__;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
-const child_process_1 = __nccwpck_require__(2081);
 const VersionManager_1 = __nccwpck_require__(1526);
 const promises_1 = __nccwpck_require__(3292);
-const crypto = __nccwpck_require__(6113);
 async function run() {
     const allowedCommitTypes = core
         .getInput("allowed-commit-types")
@@ -33772,41 +33762,17 @@ async function run() {
     const versionJsonFile = core.getInput("version-json-file") || "package.json";
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
-    const commits = [];
-    if (github.context.payload.commits?.length === 1) {
-        const { message, id } = github.context.payload.commits[0];
-        commits.push({ sha: id, message });
-    }
-    else {
-        const { after, before } = github.context.payload;
-        const boundary = `${crypto.randomBytes(16).toString("hex")}`;
-        const output = (0, child_process_1.execSync)(`git log --pretty=format:'%H %B${boundary}' ${after}..${before}`).toString();
-        core.debug(`Output: ${output}`);
-        for (const commit of output.split(boundary)) {
-            if (!commit.trim()) {
-                continue;
-            }
-            const space = commit.indexOf(" ");
-            if (space === -1) {
-                core.error("Failed to parse commit: " + commit);
-                continue;
-            }
-            const sha = commit.slice(0, space);
-            const message = commit.slice(space + 1).trim();
-            if (!sha || !message) {
-                core.error("Failed to parse commit: " + commit);
-                continue;
-            }
-            commits.push({ sha, message });
-        }
-    }
+    const commits = github.context.payload.commits.map((commit) => ({
+        message: commit.message,
+        sha: commit.id,
+    }));
     if (commits.length === 0) {
         core.info("No new commits found.");
         return;
     }
     core.info("New commits found:");
     for (const commit of commits) {
-        core.info(`- ${commit.sha}: ${commit.message}`);
+        core.info(`- ${commit.id}: ${commit.message}`);
     }
     const versionManager = new VersionManager_1.default();
     if (allowedCommitTypes.length > 0) {

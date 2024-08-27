@@ -4,7 +4,7 @@ import * as core from "@actions/core";
 
 export type Commit = {
     message: string;
-    sha: string;
+    id: string;
 };
 
 class VersionManager {
