@@ -31778,7 +31778,7 @@ class VersionManager {
         return this;
     }
     async bump(lastVersion) {
-        const parsed = semver.parse(lastVersion);
+        const parsed = semver.parse(lastVersion, { loose: true });
         let build = [];
         let suffix = [];
         if (!parsed) {
@@ -33774,7 +33774,7 @@ async function run() {
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
     const { after, before } = github.context.payload;
     const boundary = `${crypto.randomBytes(16).toString("hex")}`;
-    const output = (0, child_process_1.execSync)(`git log --pretty=format:'%H %B${boundary}' ${before}..${after}`).toString();
+    const output = (0, child_process_1.execSync)(`git log --pretty=format:'%H %B${boundary}' ${after}..${before}`).toString();
     core.debug(`Output: ${output}`);
     const commits = [];
     for (const commit of output.split(boundary)) {

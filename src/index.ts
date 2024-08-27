@@ -26,7 +26,7 @@ async function run() {
     const { after, before } = github.context.payload;
     const boundary = `${crypto.randomBytes(16).toString("hex")}`;
     const output = execSync(
-        `git log --pretty=format:'%H %B${boundary}' ${before}..${after}`,
+        `git log --pretty=format:'%H %B${boundary}' ${after}..${before}`,
     ).toString();
 
     core.debug(`Output: ${output}`);
