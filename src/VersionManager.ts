@@ -40,7 +40,7 @@ class VersionManager {
 
         parsed.build = [];
 
-        for (const commit of this.commits.toReversed()) {
+        for (const commit of this.commits) {
             const newlineIndex = commit.message.indexOf("\n");
             const head = commit.message.slice(
                 0,
