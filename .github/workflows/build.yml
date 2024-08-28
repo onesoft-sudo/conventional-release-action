@@ -14,4 +14,4 @@ jobs:
 
             - uses: ./
               with:
-                  a: 1
+                  commit-message-format: "release: v%s [skip ci]"
