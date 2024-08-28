@@ -36,7 +36,7 @@ inputs:
     git-path:
         description: "The path to the git executable."
         required: false
-        default: "git"
+        default: "/usr/bin/git"
     git-user-name:
         description: "The name to use for the git user."
         required: false

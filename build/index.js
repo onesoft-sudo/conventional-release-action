@@ -31792,8 +31792,10 @@ class GitClient {
             });
             return new Promise((resolve, reject) => {
                 process.on("exit", (code) => {
-                    if (code === null || code !== 0) {
-                        console.log("Failed to execute git command: ");
+                    if (code !== null || code !== 0) {
+                        console.log("Failed to execute git command (Exit code " +
+                            code +
+                            "): ");
                         console.error(error);
                         reject(new Error(`Failed to execute git command: ${error}`));
                         return;
