@@ -33026,7 +33026,7 @@ class GitClient {
     }
     pull(remote, branch) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.exec({ args: ["pull", remote, branch] });
+            yield this.exec({ args: ["pull", "--unshallow", remote, branch] });
         });
     }
     getFirstCommit() {
