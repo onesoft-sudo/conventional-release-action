@@ -24,7 +24,9 @@ class GitClient implements AsyncDisposable {
     }
 
     private async exec({ args, exitCodeCheck = true }: ExecOptions) {
-        const code = await exec(this.gitPath, args);
+        const code = await exec(this.gitPath, args, {
+            ignoreReturnCode: !exitCodeCheck,
+        });
 
         if (exitCodeCheck && code !== 0) {
             throw new Error(`Failed to execute git command.`);
@@ -32,7 +34,9 @@ class GitClient implements AsyncDisposable {
     }
 
     private async execWithOutput({ args, exitCodeCheck = true }: ExecOptions) {
-        const { stdout, exitCode } = await getExecOutput(this.gitPath, args);
+        const { stdout, exitCode } = await getExecOutput(this.gitPath, args, {
+            ignoreReturnCode: !exitCodeCheck,
+        });
 
         if (exitCodeCheck && exitCode !== 0) {
             throw new Error(`Failed to execute git command.`);
@@ -61,17 +65,17 @@ class GitClient implements AsyncDisposable {
 
     public async setup({ name, email, gpgKey }: SetupOptions) {
         this.oldGitOptions.name =
-            (await this.exec({
+            (await this.execWithOutput({
                 args: ["config", "user.name"],
                 exitCodeCheck: false,
             }).catch(() => "")) || undefined;
         this.oldGitOptions.email =
-            (await this.exec({
+            (await this.execWithOutput({
                 args: ["config", "user.email"],
                 exitCodeCheck: false,
             }).catch(() => "")) || undefined;
         this.oldGitOptions.gpgKeyId =
-            (await this.exec({
+            (await this.execWithOutput({
                 args: ["config", "user.signingkey"],
                 exitCodeCheck: false,
             }).catch(() => "")) || undefined;

@@ -33004,7 +33004,9 @@ class GitClient {
     }
     exec(_a) {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
-            const code = yield (0, exec_1.exec)(this.gitPath, args);
+            const code = yield (0, exec_1.exec)(this.gitPath, args, {
+                ignoreReturnCode: !exitCodeCheck,
+            });
             if (exitCodeCheck && code !== 0) {
                 throw new Error(`Failed to execute git command.`);
             }
@@ -33012,7 +33014,9 @@ class GitClient {
     }
     execWithOutput(_a) {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
-            const { stdout, exitCode } = yield (0, exec_1.getExecOutput)(this.gitPath, args);
+            const { stdout, exitCode } = yield (0, exec_1.getExecOutput)(this.gitPath, args, {
+                ignoreReturnCode: !exitCodeCheck,
+            });
             if (exitCodeCheck && exitCode !== 0) {
                 throw new Error(`Failed to execute git command.`);
             }
@@ -33044,17 +33048,17 @@ class GitClient {
     setup(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, gpgKey }) {
             this.oldGitOptions.name =
-                (yield this.exec({
+                (yield this.execWithOutput({
                     args: ["config", "user.name"],
                     exitCodeCheck: false,
                 }).catch(() => "")) || undefined;
             this.oldGitOptions.email =
-                (yield this.exec({
+                (yield this.execWithOutput({
                     args: ["config", "user.email"],
                     exitCodeCheck: false,
                 }).catch(() => "")) || undefined;
             this.oldGitOptions.gpgKeyId =
-                (yield this.exec({
+                (yield this.execWithOutput({
                     args: ["config", "user.signingkey"],
                     exitCodeCheck: false,
                 }).catch(() => "")) || undefined;
