@@ -1,4 +1,4 @@
-import { spawn } from "child_process";
+import { exec, getExecOutput } from "@actions/exec";
 
 type SetupOptions = {
     name: string;
@@ -23,49 +23,22 @@ class GitClient implements AsyncDisposable {
         this.gitPath = gitPath;
     }
 
-    private async logCommand(command: string, args: string[]) {
-        console.log(`[exec]: ${command} ${args.join(" ")}`);
+    private async exec({ args, exitCodeCheck = true }: ExecOptions) {
+        const code = await exec(this.gitPath, args);
+
+        if (exitCodeCheck && code !== 0) {
+            throw new Error(`Failed to execute git command.`);
+        }
     }
 
-    private async exec({ args, exitCodeCheck = true }: ExecOptions) {
-        this.logCommand(this.gitPath, args);
+    private async execWithOutput({ args, exitCodeCheck = true }: ExecOptions) {
+        const { stdout, exitCode } = await getExecOutput(this.gitPath, args);
 
-        const process = spawn(this.gitPath, args, {
-            stdio: "pipe",
-        });
+        if (exitCodeCheck && exitCode !== 0) {
+            throw new Error(`Failed to execute git command.`);
+        }
 
-        let output = "";
-        let error = "";
-
-        process.stdout.on("data", (data) => {
-            output += data.toString();
-        });
-
-        process.stderr.on("data", (data) => {
-            error += data.toString();
-        });
-
-        return new Promise<string>((resolve, reject) => {
-            process.on("exit", (code) => {
-                if (exitCodeCheck && code !== null && code !== 0) {
-                    console.log(
-                        "Failed to execute git command (Exit code " +
-                            code +
-                            "): ",
-                    );
-                    console.error(error);
-
-                    reject(
-                        new Error(`Failed to execute git command: ${error}`),
-                    );
-                    return;
-                }
-
-                resolve(output.trim());
-            });
-
-            process.on("error", reject);
-        });
+        return stdout;
     }
 
     public async add(...files: string[]) {
@@ -156,27 +129,21 @@ class GitClient implements AsyncDisposable {
     }
 
     private async importGPGKey(key: string) {
-        const process = spawn("gpg", ["--import"], {
-            stdio: "pipe",
-        });
-
-        process.stdin.write(key);
-        process.stdin.end();
-
         let keyId: string | undefined;
 
-        await new Promise<void>((resolve, reject) => {
-            process.stdout.on("data", (data) => {
-                const match = data.toString().match(/^gpg: key ([0-9A-F]+):/);
+        await exec("gpg", ["--import"], {
+            input: Buffer.from(key, "utf-8"),
+            listeners: {
+                stdout: (data) => {
+                    const match = data
+                        .toString()
+                        .match(/^gpg: key ([0-9A-F]+):/);
 
-                if (match) {
-                    keyId = match[1];
-                    resolve();
-                }
-            });
-
-            process.on("exit", resolve);
-            process.on("error", reject);
+                    if (match) {
+                        keyId = match[1];
+                    }
+                },
+            },
         });
 
         if (!keyId) {
