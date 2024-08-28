@@ -51,6 +51,14 @@ class GitClient implements AsyncDisposable {
         return stdout;
     }
 
+    public async getFirstCommit() {
+        const output = await this.execWithOutput({
+            args: ["rev-list", "--max-parents=0", "HEAD"],
+        });
+
+        return output.trim();
+    }
+
     public async getCommits(start?: string, end?: string) {
         const boundary = crypto.randomBytes(64).toString("hex");
         const output = (

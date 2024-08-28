@@ -33024,6 +33024,14 @@ class GitClient {
             return stdout;
         });
     }
+    getFirstCommit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const output = yield this.execWithOutput({
+                args: ["rev-list", "--max-parents=0", "HEAD"],
+            });
+            return output.trim();
+        });
+    }
     getCommits(start, end) {
         return __awaiter(this, void 0, void 0, function* () {
             const boundary = crypto.randomBytes(64).toString("hex");
@@ -33391,19 +33399,25 @@ function run() {
             core.info(`Metadata file: ${metadataFile}`);
             console.log(github.context.payload);
             let metadataFileJSON;
-            if (!(0, fs_1.existsSync)(metadataFile) || !createCommit) {
+            const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
+            const versionManager = new VersionManager_1.default();
+            if (!createCommit) {
+                core.info("Creating commits is disabled.");
+                metadataFileJSON = {
+                    lastReadCommit: github.context.payload.before,
+                };
+            }
+            else if (!(0, fs_1.existsSync)(metadataFile)) {
                 if (createCommit) {
                     core.info("Metadata file not found, will be created after the first run.");
                 }
                 metadataFileJSON = {
-                    lastReadCommit: github.context.payload.before,
+                    lastReadCommit: (yield gitClient.getFirstCommit()) || "",
                 };
             }
             else {
                 metadataFileJSON = JSON.parse(yield (0, promises_1.readFile)(metadataFile, "utf-8"));
             }
-            const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
-            const versionManager = new VersionManager_1.default();
             const commits = yield gitClient.getCommits(metadataFileJSON.lastReadCommit, github.context.payload.after);
             if (commits.length === 0) {
                 core.info("No new commits found.");
@@ -33449,7 +33463,8 @@ function run() {
                 gpgKey: gitGPPKey || undefined,
             });
             if (createCommit) {
-                yield gitClient.add(metadataFileJSON.lastReadCommit);
+                yield (0, promises_1.writeFile)(metadataFile, JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n");
+                yield gitClient.add(metadataFile);
                 yield gitClient.add(versionJsonFile);
                 yield gitClient.commit(commitMessageFormat.replaceAll("%s", updatedVersion), gitSignOff);
             }
@@ -33468,7 +33483,6 @@ function run() {
                 ];
                 yield gitClient.push(...pushArgs.filter(Boolean));
             }
-            yield (0, promises_1.writeFile)(metadataFile, JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n");
         }
         catch (e_1) {
             env_1.error = e_1;

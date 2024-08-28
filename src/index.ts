@@ -46,7 +46,16 @@ async function run() {
         lastReadCommit: string;
     };
 
-    if (!existsSync(metadataFile) || !createCommit) {
+    await using gitClient = new GitClient(gitPath);
+    const versionManager = new VersionManager();
+
+    if (!createCommit) {
+        core.info("Creating commits is disabled.");
+
+        metadataFileJSON = {
+            lastReadCommit: github.context.payload.before,
+        };
+    } else if (!existsSync(metadataFile)) {
         if (createCommit) {
             core.info(
                 "Metadata file not found, will be created after the first run.",
@@ -54,14 +63,11 @@ async function run() {
         }
 
         metadataFileJSON = {
-            lastReadCommit: github.context.payload.before,
+            lastReadCommit: (await gitClient.getFirstCommit()) || "",
         };
     } else {
         metadataFileJSON = JSON.parse(await readFile(metadataFile, "utf-8"));
     }
-
-    await using gitClient = new GitClient(gitPath);
-    const versionManager = new VersionManager();
 
     const commits = await gitClient.getCommits(
         metadataFileJSON.lastReadCommit,
@@ -142,7 +148,12 @@ async function run() {
     });
 
     if (createCommit) {
-        await gitClient.add(metadataFileJSON.lastReadCommit);
+        await writeFile(
+            metadataFile,
+            JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n",
+        );
+
+        await gitClient.add(metadataFile);
         await gitClient.add(versionJsonFile);
         await gitClient.commit(
             commitMessageFormat.replaceAll("%s", updatedVersion),
@@ -168,11 +179,6 @@ async function run() {
             ...(pushArgs.filter(Boolean) as [string, string, string]),
         );
     }
-
-    await writeFile(
-        metadataFile,
-        JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n",
-    );
 }
 
 run()
