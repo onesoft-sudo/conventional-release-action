@@ -33404,7 +33404,6 @@ function run() {
             const gitPushBranch = core.getInput("git-push-branch") || undefined;
             const metadataFile = core.getInput("metadata-file");
             core.info(`Metadata file: ${metadataFile}`);
-            console.log(github.context.payload);
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
             const versionManager = new VersionManager_1.default();
