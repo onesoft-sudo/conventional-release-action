@@ -33118,19 +33118,17 @@ class GitClient {
     importGPGKey(key) {
         return __awaiter(this, void 0, void 0, function* () {
             let keyId;
-            yield (0, exec_1.exec)("gpg", ["--import"], {
+            const { stdout } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
                 input: Buffer.from(key, "utf-8"),
-                listeners: {
-                    stdout: (data) => {
-                        const match = data
-                            .toString()
-                            .match(/^gpg: key ([0-9A-F]+):/);
-                        if (match) {
-                            keyId = match[1];
-                        }
-                    },
-                },
             });
+            console.log(stdout.split(/\n+/));
+            for (const data of stdout.split(/\n+/)) {
+                const match = data.match(/^gpg: key ([0-9A-F]+):/);
+                console.log(match === null ? null : [...match]);
+                if (match) {
+                    keyId = match[1];
+                }
+            }
             if (!keyId) {
                 throw new Error("Failed to import GPG key.");
             }
