@@ -70,8 +70,8 @@ async function run() {
     }
 
     const commits = await gitClient.getCommits(
-        metadataFileJSON.lastReadCommit,
         github.context.payload.after,
+        metadataFileJSON.lastReadCommit,
     );
 
     if (commits.length === 0) {

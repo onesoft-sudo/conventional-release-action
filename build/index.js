@@ -33418,7 +33418,7 @@ function run() {
             else {
                 metadataFileJSON = JSON.parse(yield (0, promises_1.readFile)(metadataFile, "utf-8"));
             }
-            const commits = yield gitClient.getCommits(metadataFileJSON.lastReadCommit, github.context.payload.after);
+            const commits = yield gitClient.getCommits(github.context.payload.after, metadataFileJSON.lastReadCommit);
             if (commits.length === 0) {
                 core.info("No new commits found.");
                 return;
