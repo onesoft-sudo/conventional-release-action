@@ -40,6 +40,8 @@ async function run() {
 
     core.info(`Metadata file: ${metadataFile}`);
 
+    console.log(github.context.payload);
+
     let metadataFileJSON: {
         lastReadCommit: string;
     };

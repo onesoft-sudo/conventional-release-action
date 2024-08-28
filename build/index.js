@@ -33389,6 +33389,7 @@ function run() {
             const gitPushBranch = core.getInput("git-push-branch") || undefined;
             const metadataFile = core.getInput("metadata-file");
             core.info(`Metadata file: ${metadataFile}`);
+            console.log(github.context.payload);
             let metadataFileJSON;
             if (!(0, fs_1.existsSync)(metadataFile) || !createCommit) {
                 if (createCommit) {
