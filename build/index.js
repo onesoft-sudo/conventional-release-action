@@ -32102,6 +32102,7 @@ function run() {
             const gitPush = core.getInput("git-push") === "true";
             const gitPushRemote = core.getInput("git-push-remote") || "origin";
             const gitPushBranch = core.getInput("git-push-branch") || undefined;
+            console.log(`Using git: ${gitPath}`);
             const commits = github.context.payload.commits.map((commit) => ({
                 message: commit.message,
                 id: commit.id,
@@ -32114,7 +32115,7 @@ function run() {
             for (const commit of commits) {
                 core.info(`- ${commit.id}: ${commit.message}`);
             }
-            const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
+            const gitClient = __addDisposableResource(env_1, new GitClient_1.default("/usr/bin/git"), true);
             const versionManager = new VersionManager_1.default();
             if (allowedCommitTypes.length > 0) {
                 versionManager.setAllowedCommitTypes(allowedCommitTypes);

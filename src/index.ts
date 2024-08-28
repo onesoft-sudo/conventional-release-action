@@ -36,6 +36,8 @@ async function run() {
     const gitPushRemote = core.getInput("git-push-remote") || "origin";
     const gitPushBranch = core.getInput("git-push-branch") || undefined;
 
+    console.log(`Using git: ${gitPath}`);
+
     const commits: Commit[] = github.context.payload.commits.map(
         (commit: Commit) => ({
             message: commit.message,
@@ -54,7 +56,7 @@ async function run() {
         core.info(`- ${commit.id}: ${commit.message}`);
     }
 
-    await using gitClient = new GitClient(gitPath);
+    await using gitClient = new GitClient("/usr/bin/git");
     const versionManager = new VersionManager();
 
     if (allowedCommitTypes.length > 0) {
