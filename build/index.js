@@ -31750,25 +31750,185 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 1526:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ 9367:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const child_process_1 = __nccwpck_require__(2081);
+class GitClient {
+    constructor(gitPath) {
+        this.oldGitOptions = {};
+        this.gitPath = gitPath;
+    }
+    logCommand(command, args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log(`[exec]: ${command} ${args.join(" ")}`);
+        });
+    }
+    exec(...args) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logCommand(this.gitPath, args);
+            const process = (0, child_process_1.spawn)(this.gitPath, args, {
+                stdio: "pipe",
+            });
+            let output = "";
+            let error = "";
+            process.stdout.on("data", (data) => {
+                output += data.toString();
+            });
+            process.stderr.on("data", (data) => {
+                error += data.toString();
+            });
+            return new Promise((resolve, reject) => {
+                process.on("exit", (code) => {
+                    if (code !== 0) {
+                        console.log("Failed to execute git command: ");
+                        console.error(error);
+                        reject(new Error(`Failed to execute git command: ${error}`));
+                        return;
+                    }
+                    resolve(output.trim());
+                });
+                process.on("error", reject);
+            });
+        });
+    }
+    add(...files) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec("add", ...files);
+        });
+    }
+    commit(message, signOff) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec("commit", `-${signOff ? "s" : ""}m`, message);
+        });
+    }
+    tag(tag) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec("tag", "-a", tag, "-m", `Tag ${tag}`);
+        });
+    }
+    push(remote, ...refs) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec("push", remote, ...refs);
+        });
+    }
+    setup(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ name, email, gpgKey }) {
+            this.oldGitOptions.name =
+                (yield this.exec("config", "user.name")) || undefined;
+            this.oldGitOptions.email =
+                (yield this.exec("config", "user.email")) || undefined;
+            this.oldGitOptions.gpgKeyId =
+                (yield this.exec("config", "user.signingkey")) || undefined;
+            yield this.exec("config", "user.name", name);
+            yield this.exec("config", "user.email", email);
+            if (gpgKey) {
+                const keyId = yield this.importGPGKey(gpgKey);
+                yield this.exec("config", "user.signingkey", keyId);
+                yield this.exec("config", "commit.gpgSign", "true");
+            }
+        });
+    }
+    teardown() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.oldGitOptions.name) {
+                yield this.exec("config", "user.name", this.oldGitOptions.name);
+            }
+            else {
+                yield this.exec("config", "--unset", "user.name");
+            }
+            if (this.oldGitOptions.email) {
+                yield this.exec("config", "user.email", this.oldGitOptions.email);
+            }
+            else {
+                yield this.exec("config", "--unset", "user.email");
+            }
+            if (this.oldGitOptions.gpgKeyId) {
+                yield this.exec("config", "user.signingkey", this.oldGitOptions.gpgKeyId);
+            }
+            else {
+                yield this.exec("config", "--unset", "user.signingkey");
+            }
+        });
+    }
+    importGPGKey(key) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const process = (0, child_process_1.spawn)("gpg", ["--import"], {
+                stdio: "pipe",
+            });
+            process.stdin.write(key);
+            process.stdin.end();
+            let keyId;
+            yield new Promise((resolve, reject) => {
+                process.stdout.on("data", (data) => {
+                    const match = data.toString().match(/^gpg: key ([0-9A-F]+):/);
+                    if (match) {
+                        keyId = match[1];
+                        resolve();
+                    }
+                });
+                process.on("exit", resolve);
+                process.on("error", reject);
+            });
+            if (!keyId) {
+                throw new Error("Failed to import GPG key.");
+            }
+            return keyId;
+        });
+    }
+    [Symbol.asyncDispose]() {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.teardown();
+        });
+    }
+}
+exports["default"] = GitClient;
+
+
+/***/ }),
+
+/***/ 1526:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const semver = __nccwpck_require__(1383);
 class VersionManager {
-    allowedCommitTypes = [
-        "feat",
-        "fix",
-        "chore",
-        "docs",
-        "style",
-        "refactor",
-        "perf",
-        "test",
-    ];
-    commits = [];
+    constructor() {
+        this.allowedCommitTypes = [
+            "feat",
+            "fix",
+            "chore",
+            "docs",
+            "style",
+            "refactor",
+            "perf",
+            "test",
+        ];
+        this.commits = [];
+    }
     setAllowedCommitTypes(allowedCommitTypes) {
         this.allowedCommitTypes = allowedCommitTypes;
         return this;
@@ -31777,73 +31937,254 @@ class VersionManager {
         this.commits = commits;
         return this;
     }
-    async bump(lastVersion) {
-        const parsed = semver.parse(lastVersion, { loose: true });
-        let build = [];
-        let suffix = [];
-        if (!parsed) {
-            throw new Error(`Failed to parse version "${lastVersion}".`);
-        }
-        parsed.build = [];
-        for (const commit of this.commits.toReversed()) {
-            const newlineIndex = commit.message.indexOf("\n");
-            const head = commit.message.slice(0, newlineIndex === -1 ? undefined : newlineIndex);
-            let [type] = head.split(":");
-            let increased = false;
-            let major = false;
-            const forcePrerelease = /\[(v\:)?(alpha|beta|rc|prerelease)\]/gi.test(commit.message);
-            if (type.endsWith("!")) {
-                type = type.slice(0, -1);
-                major = true;
+    bump(lastVersion) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const parsed = semver.parse(lastVersion, { loose: true });
+            let build = [];
+            let suffix = [];
+            if (!parsed) {
+                throw new Error(`Failed to parse version "${lastVersion}".`);
             }
-            type = type.trim();
-            type = type.includes("(") ? type.slice(0, type.indexOf("(")) : type;
-            type = type.toLowerCase();
-            if (!this.allowedCommitTypes.includes(type)) {
-                continue;
-            }
-            const buildMetadata = commit.message.match(/\nBuild-metadata: (.*)/i);
-            const versionSuffix = commit.message.match(/\nVersion-suffix: (.*)/i);
-            if (major) {
-                parsed.inc(forcePrerelease ? "premajor" : "major");
-                increased = true;
-            }
-            else {
-                if (type === "feat") {
-                    parsed.inc(forcePrerelease ? "preminor" : "minor");
+            parsed.build = [];
+            for (const commit of this.commits) {
+                const newlineIndex = commit.message.indexOf("\n");
+                const head = commit.message.slice(0, newlineIndex === -1 ? undefined : newlineIndex);
+                let [type] = head.split(":");
+                let increased = false;
+                let major = false;
+                const forcePrerelease = /\[(v\:)?(alpha|beta|rc|prerelease)\]/gi.test(commit.message);
+                if (type.endsWith("!")) {
+                    type = type.slice(0, -1);
+                    major = true;
+                }
+                type = type.trim();
+                type = type.includes("(") ? type.slice(0, type.indexOf("(")) : type;
+                type = type.toLowerCase();
+                if (!this.allowedCommitTypes.includes(type)) {
+                    continue;
+                }
+                const buildMetadata = commit.message.match(/\nBuild-metadata: (.*)/i);
+                const versionSuffix = commit.message.match(/\nVersion-suffix: (.*)/i);
+                if (major) {
+                    parsed.inc(forcePrerelease ? "premajor" : "major");
                     increased = true;
                 }
-                if (type === "fix") {
-                    parsed.inc(forcePrerelease ? "prepatch" : "patch");
-                    increased = true;
+                else {
+                    if (type === "feat") {
+                        parsed.inc(forcePrerelease ? "preminor" : "minor");
+                        increased = true;
+                    }
+                    if (type === "fix") {
+                        parsed.inc(forcePrerelease ? "prepatch" : "patch");
+                        increased = true;
+                    }
                 }
-            }
-            if (forcePrerelease && !increased) {
-                parsed.inc("prerelease");
-                increased = true;
-            }
-            if (versionSuffix) {
-                if (!increased) {
+                if (forcePrerelease && !increased) {
                     parsed.inc("prerelease");
                     increased = true;
                 }
-                suffix = versionSuffix[1].split(".");
-            }
-            if (buildMetadata) {
-                if (!increased) {
-                    parsed.inc("prerelease");
-                    increased = true;
+                if (versionSuffix) {
+                    if (!increased) {
+                        parsed.inc("prerelease");
+                        increased = true;
+                    }
+                    suffix = versionSuffix[1].split(".");
                 }
-                build = buildMetadata[1].split(".");
+                if (buildMetadata) {
+                    if (!increased) {
+                        parsed.inc("prerelease");
+                        increased = true;
+                    }
+                    build = buildMetadata[1].split(".");
+                }
             }
-        }
-        const newVersion = parsed.toString() +
-            (suffix?.length ? `${suffix.join(".")}` : "") +
-            (build?.length ? `+${build.join(".")}` : "");
-        return newVersion;
+            const newVersion = parsed.toString() +
+                ((suffix === null || suffix === void 0 ? void 0 : suffix.length) ? `${suffix.join(".")}` : "") +
+                ((build === null || build === void 0 ? void 0 : build.length) ? `+${build.join(".")}` : "");
+            return newVersion;
+        });
     }
 }
 exports["default"] = VersionManager;
+
+
+/***/ }),
+
+/***/ 6144:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose, inner;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        function next() {
+            while (env.stack.length) {
+                var rec = env.stack.pop();
+                try {
+                    var result = rec.dispose && rec.dispose.call(rec.value);
+                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+const promises_1 = __nccwpck_require__(3292);
+const GitClient_1 = __nccwpck_require__(9367);
+const VersionManager_1 = __nccwpck_require__(1526);
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
+        const env_1 = { stack: [], error: void 0, hasError: false };
+        try {
+            const allowedCommitTypes = core
+                .getInput("allowed-commit-types")
+                .split(",")
+                .filter(Boolean);
+            const versionJsonFile = core.getInput("version-json-file") || "package.json";
+            const versionManagerModulePath = core.getInput("version-manager-module");
+            const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
+            const createTag = core.getInput("create-tag") === "true";
+            const tagPrefix = core.getInput("tag-prefix") || "v";
+            const createCommit = core.getInput("create-commit") === "true";
+            const commitMessageFormat = core.getInput("commit-message-format") ||
+                "chore(release): v%s [skip ci]";
+            const gitPath = core.getInput("git-path") || "/usr/bin/git";
+            const gitUserName = core.getInput("git-user-name");
+            const gitUserEmail = core.getInput("git-user-email");
+            const gitGPPKey = core.getInput("git-gpg-key");
+            const gitSignOff = core.getInput("git-sign-off") === "true";
+            const gitPush = core.getInput("git-push") === "true";
+            const gitPushRemote = core.getInput("git-push-remote") || "origin";
+            const gitPushBranch = core.getInput("git-push-branch") || undefined;
+            const commits = github.context.payload.commits.map((commit) => ({
+                message: commit.message,
+                id: commit.id,
+            }));
+            if (commits.length === 0) {
+                core.info("No new commits found.");
+                return;
+            }
+            core.info("New commits found:");
+            for (const commit of commits) {
+                core.info(`- ${commit.id}: ${commit.message}`);
+            }
+            const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
+            const versionManager = new VersionManager_1.default();
+            if (allowedCommitTypes.length > 0) {
+                versionManager.setAllowedCommitTypes(allowedCommitTypes);
+            }
+            versionManager.setCommits(commits);
+            const versionManagerModule = versionManagerModulePath
+                ? yield Promise.resolve(`${versionManagerModulePath}`).then(s => require(s))
+                : null;
+            const getLastVersion = (_a = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.resolver) !== null && _a !== void 0 ? _a : (() => __awaiter(this, void 0, void 0, function* () {
+                const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
+                if (!packageJson.version) {
+                    throw new Error(`Version file "${versionJsonFile}" does not contain a version field.`);
+                }
+                return packageJson.version;
+            }));
+            const updateVersion = (_b = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.updater) !== null && _b !== void 0 ? _b : ((_versionManager, version) => __awaiter(this, void 0, void 0, function* () {
+                const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
+                packageJson.version = version;
+                yield (0, promises_1.writeFile)(versionJsonFile, JSON.stringify(packageJson, null, jsonTabWidth) + "\n");
+            }));
+            const currentVersion = yield getLastVersion(versionManager);
+            core.info(`Current version: ${currentVersion}`);
+            const updatedVersion = yield versionManager.bump(currentVersion);
+            if (updatedVersion === currentVersion) {
+                core.info("No new version was generated.");
+                core.setOutput("version", "");
+                return;
+            }
+            core.info(`Updated version: ${updatedVersion}`);
+            yield updateVersion(versionManager, updatedVersion);
+            core.setOutput("version", updatedVersion);
+            yield gitClient.setup({
+                name: gitUserName,
+                email: gitUserEmail,
+                gpgKey: gitGPPKey || undefined,
+            });
+            if (createCommit) {
+                yield gitClient.add(versionJsonFile);
+                yield gitClient.commit(commitMessageFormat.replaceAll("%s", updatedVersion), gitSignOff);
+            }
+            if (createTag) {
+                yield gitClient.tag(`${tagPrefix}${updatedVersion}`);
+                core.setOutput("tag", `${tagPrefix}${updatedVersion}`);
+            }
+            else {
+                core.setOutput("tag", "");
+            }
+            if (gitPush) {
+                const pushArgs = [
+                    gitPushRemote,
+                    gitPushBranch !== null && gitPushBranch !== void 0 ? gitPushBranch : "HEAD",
+                    createTag ? `refs/tags/${tagPrefix}${updatedVersion}` : undefined,
+                ];
+                yield gitClient.push(...pushArgs.filter(Boolean));
+            }
+        }
+        catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+        }
+        finally {
+            const result_1 = __disposeResources(env_1);
+            if (result_1)
+                yield result_1;
+        }
+    });
+}
+run()
+    .then()
+    .catch((error) => core.setFailed(error));
 
 
 /***/ }),
@@ -31869,6 +32210,14 @@ module.exports = require("async_hooks");
 
 "use strict";
 module.exports = require("buffer");
+
+/***/ }),
+
+/***/ 2081:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("child_process");
 
 /***/ }),
 
@@ -33743,71 +34092,12 @@ module.exports = parseParams
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-var exports = __webpack_exports__;
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-const VersionManager_1 = __nccwpck_require__(1526);
-const promises_1 = __nccwpck_require__(3292);
-async function run() {
-    const allowedCommitTypes = core
-        .getInput("allowed-commit-types")
-        .split(",")
-        .filter(Boolean);
-    const versionJsonFile = core.getInput("version-json-file") || "package.json";
-    const versionManagerModulePath = core.getInput("version-manager-module");
-    const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
-    const commits = github.context.payload.commits.map((commit) => ({
-        message: commit.message,
-        id: commit.id,
-    }));
-    if (commits.length === 0) {
-        core.info("No new commits found.");
-        return;
-    }
-    core.info("New commits found:");
-    for (const commit of commits) {
-        core.info(`- ${commit.id}: ${commit.message}`);
-    }
-    const versionManager = new VersionManager_1.default();
-    if (allowedCommitTypes.length > 0) {
-        versionManager.setAllowedCommitTypes(allowedCommitTypes);
-    }
-    versionManager.setCommits(commits);
-    const versionManagerModule = versionManagerModulePath
-        ? await Promise.resolve(`${versionManagerModulePath}`).then(s => require(s))
-        : null;
-    const getLastVersion = versionManagerModule?.resolver ??
-        (async () => {
-            const packageJson = JSON.parse(await (0, promises_1.readFile)(versionJsonFile, "utf-8"));
-            if (!packageJson.version) {
-                throw new Error(`Version file "${versionJsonFile}" does not contain a version field.`);
-            }
-            return packageJson.version;
-        });
-    const updateVersion = versionManagerModule?.updater ??
-        (async (_versionManager, version) => {
-            const packageJson = JSON.parse(await (0, promises_1.readFile)(versionJsonFile, "utf-8"));
-            packageJson.version = version;
-            await (0, promises_1.writeFile)(versionJsonFile, JSON.stringify(packageJson, null, jsonTabWidth) + "\n");
-        });
-    const currentVersion = await getLastVersion(versionManager);
-    core.info(`Current version: ${currentVersion}`);
-    const updatedVersion = await versionManager.bump(currentVersion);
-    core.info(`Updated version: ${updatedVersion}`);
-    await updateVersion(versionManager, updatedVersion);
-}
-run()
-    .then()
-    .catch((error) => core.setFailed(error));
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(6144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
