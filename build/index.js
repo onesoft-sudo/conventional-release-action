@@ -33024,6 +33024,11 @@ class GitClient {
             return stdout;
         });
     }
+    pull(remote, branch) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.exec({ args: ["pull", remote, branch] });
+        });
+    }
     getFirstCommit() {
         return __awaiter(this, void 0, void 0, function* () {
             const output = yield this.execWithOutput({
@@ -33401,6 +33406,12 @@ function run() {
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
             const versionManager = new VersionManager_1.default();
+            yield gitClient.setup({
+                name: gitUserName,
+                email: gitUserEmail,
+                gpgKey: gitGPPKey || undefined,
+            });
+            yield gitClient.pull(gitPushRemote, gitPushBranch !== null && gitPushBranch !== void 0 ? gitPushBranch : "HEAD");
             if (!createCommit) {
                 core.info("Creating commits is disabled.");
                 metadataFileJSON = {
@@ -33418,7 +33429,7 @@ function run() {
             else {
                 metadataFileJSON = JSON.parse(yield (0, promises_1.readFile)(metadataFile, "utf-8"));
             }
-            const commits = yield gitClient.getCommits(github.context.payload.after, metadataFileJSON.lastReadCommit);
+            const commits = yield gitClient.getCommits(metadataFileJSON.lastReadCommit, github.context.payload.after);
             if (commits.length === 0) {
                 core.info("No new commits found.");
                 return;
@@ -33457,11 +33468,6 @@ function run() {
             core.info(`Updated version: ${updatedVersion}`);
             yield updateVersion(versionManager, updatedVersion);
             core.setOutput("version", updatedVersion);
-            yield gitClient.setup({
-                name: gitUserName,
-                email: gitUserEmail,
-                gpgKey: gitGPPKey || undefined,
-            });
             if (createCommit) {
                 yield (0, promises_1.writeFile)(metadataFile, JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n");
                 yield gitClient.add(metadataFile);

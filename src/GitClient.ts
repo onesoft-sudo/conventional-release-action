@@ -51,6 +51,10 @@ class GitClient implements AsyncDisposable {
         return stdout;
     }
 
+    public async pull(remote: string, branch: string) {
+        await this.exec({ args: ["pull", remote, branch] });
+    }
+
     public async getFirstCommit() {
         const output = await this.execWithOutput({
             args: ["rev-list", "--max-parents=0", "HEAD"],

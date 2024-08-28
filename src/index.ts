@@ -49,6 +49,14 @@ async function run() {
     await using gitClient = new GitClient(gitPath);
     const versionManager = new VersionManager();
 
+    await gitClient.setup({
+        name: gitUserName,
+        email: gitUserEmail,
+        gpgKey: gitGPPKey || undefined,
+    });
+
+    await gitClient.pull(gitPushRemote, gitPushBranch ?? "HEAD");
+
     if (!createCommit) {
         core.info("Creating commits is disabled.");
 
@@ -70,8 +78,8 @@ async function run() {
     }
 
     const commits = await gitClient.getCommits(
-        github.context.payload.after,
         metadataFileJSON.lastReadCommit,
+        github.context.payload.after,
     );
 
     if (commits.length === 0) {
@@ -140,12 +148,6 @@ async function run() {
     core.info(`Updated version: ${updatedVersion}`);
     await updateVersion(versionManager, updatedVersion);
     core.setOutput("version", updatedVersion);
-
-    await gitClient.setup({
-        name: gitUserName,
-        email: gitUserEmail,
-        gpgKey: gitGPPKey || undefined,
-    });
 
     if (createCommit) {
         await writeFile(
