@@ -31849,22 +31849,22 @@ class GitClient {
     teardown() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.oldGitOptions.name) {
-                yield this.exec("config", "user.name", this.oldGitOptions.name);
+                yield this.exec("config", "user.name", this.oldGitOptions.name).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.name");
+                yield this.exec("config", "--unset", "user.name").catch(console.error);
             }
             if (this.oldGitOptions.email) {
-                yield this.exec("config", "user.email", this.oldGitOptions.email);
+                yield this.exec("config", "user.email", this.oldGitOptions.email).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.email");
+                yield this.exec("config", "--unset", "user.email").catch(console.error);
             }
             if (this.oldGitOptions.gpgKeyId) {
-                yield this.exec("config", "user.signingkey", this.oldGitOptions.gpgKeyId);
+                yield this.exec("config", "user.signingkey", this.oldGitOptions.gpgKeyId).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.signingkey");
+                yield this.exec("config", "--unset", "user.signingkey").catch(console.error);
             }
         });
     }

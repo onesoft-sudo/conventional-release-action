@@ -102,15 +102,27 @@ class GitClient implements AsyncDisposable {
 
     private async teardown() {
         if (this.oldGitOptions.name) {
-            await this.exec("config", "user.name", this.oldGitOptions.name);
+            await this.exec(
+                "config",
+                "user.name",
+                this.oldGitOptions.name,
+            ).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.name");
+            await this.exec("config", "--unset", "user.name").catch(
+                console.error,
+            );
         }
 
         if (this.oldGitOptions.email) {
-            await this.exec("config", "user.email", this.oldGitOptions.email);
+            await this.exec(
+                "config",
+                "user.email",
+                this.oldGitOptions.email,
+            ).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.email");
+            await this.exec("config", "--unset", "user.email").catch(
+                console.error,
+            );
         }
 
         if (this.oldGitOptions.gpgKeyId) {
@@ -118,9 +130,11 @@ class GitClient implements AsyncDisposable {
                 "config",
                 "user.signingkey",
                 this.oldGitOptions.gpgKeyId,
-            );
+            ).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.signingkey");
+            await this.exec("config", "--unset", "user.signingkey").catch(
+                console.error,
+            );
         }
     }
 
