@@ -1,27 +1,28 @@
 name: Release
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    release:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Automatic versioning
-              id: automatic_versioning
-              with:
-                  commit-message-format: "release: v%s [skip ci]"
-                  git-gpg-key: ${{ secrets.GPG_PRIVATE_KEY }}
+      - name: Automatic versioning
+        id: automatic_versioning
+        with:
+          commit-message-format: "release: v%s [skip ci]"
+          git-gpg-key: ${{ secrets.GPG_PRIVATE_KEY }}
 
-            - name: Create release
-              uses: ncipollo/release-action@v1
-              with:
-                  tag: ${{ steps.automatic_versioning.outputs.tag }}
+      - name: Create release
+        if: ${{ steps.automatic_versioning.outputs.tag != '' }}
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.automatic_versioning.outputs.tag }}
