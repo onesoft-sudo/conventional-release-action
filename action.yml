@@ -1,7 +1,9 @@
 name: "conventional-release-action"
+author: "OSN"
 description: "A GitHub Action to automatically tag and create releases based on conventional commits."
-color: "blue"
-icon: "tag"
+branding:
+  color: "blue"
+  icon: "tag"
 outputs:
   version:
     description: "The new version."
