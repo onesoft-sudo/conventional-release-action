@@ -31776,8 +31776,8 @@ class GitClient {
             console.log(`[exec]: ${command} ${args.join(" ")}`);
         });
     }
-    exec(...args) {
-        return __awaiter(this, void 0, void 0, function* () {
+    exec(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
             this.logCommand(this.gitPath, args);
             const process = (0, child_process_1.spawn)(this.gitPath, args, {
                 stdio: "pipe",
@@ -31792,7 +31792,7 @@ class GitClient {
             });
             return new Promise((resolve, reject) => {
                 process.on("exit", (code) => {
-                    if (code !== null && code !== 0) {
+                    if (exitCodeCheck && code !== null && code !== 0) {
                         console.log("Failed to execute git command (Exit code " +
                             code +
                             "): ");
@@ -31808,63 +31808,76 @@ class GitClient {
     }
     add(...files) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.exec("add", ...files);
+            yield this.exec({ args: ["add", ...files] });
         });
     }
     commit(message, signOff) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.exec("commit", `-${signOff ? "s" : ""}m`, message);
+            yield this.exec({
+                args: ["commit", `-${signOff ? "s" : ""}m`, message],
+            });
         });
     }
     tag(tag) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.exec("tag", "-a", tag, "-m", `Tag ${tag}`);
+            yield this.exec({ args: ["tag", "-a", tag, "-m", `Tag ${tag}`] });
         });
     }
     push(remote, ...refs) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.exec("push", remote, ...refs);
+            yield this.exec({ args: ["push", remote, ...refs] });
         });
     }
     setup(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, gpgKey }) {
             this.oldGitOptions.name =
-                (yield this.exec("config", "user.name").catch(() => "")) ||
-                    undefined;
+                (yield this.exec({ args: ["config", "user.name"] }).catch(() => "")) || undefined;
             this.oldGitOptions.email =
-                (yield this.exec("config", "user.email").catch(() => "")) ||
-                    undefined;
+                (yield this.exec({ args: ["config", "user.email"] }).catch(() => "")) || undefined;
             this.oldGitOptions.gpgKeyId =
-                (yield this.exec("config", "user.signingkey").catch(() => "")) ||
-                    undefined;
-            yield this.exec("config", "user.name", name);
-            yield this.exec("config", "user.email", email);
+                (yield this.exec({ args: ["config", "user.signingkey"] }).catch(() => "")) || undefined;
+            yield this.exec({ args: ["config", "user.name", name] });
+            yield this.exec({ args: ["config", "user.email", email] });
             if (gpgKey) {
                 const keyId = yield this.importGPGKey(gpgKey);
-                yield this.exec("config", "user.signingkey", keyId);
-                yield this.exec("config", "commit.gpgSign", "true");
+                yield this.exec({ args: ["config", "user.signingkey", keyId] });
+                yield this.exec({ args: ["config", "commit.gpgSign", "true"] });
             }
         });
     }
     teardown() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.oldGitOptions.name) {
-                yield this.exec("config", "user.name", this.oldGitOptions.name).catch(console.error);
+                yield this.exec({
+                    args: ["config", "user.name", this.oldGitOptions.name],
+                }).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.name").catch(console.error);
+                yield this.exec({ args: ["config", "--unset", "user.name"] }).catch(console.error);
             }
             if (this.oldGitOptions.email) {
-                yield this.exec("config", "user.email", this.oldGitOptions.email).catch(console.error);
+                yield this.exec({
+                    args: ["config", "user.email", this.oldGitOptions.email],
+                }).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.email").catch(console.error);
+                yield this.exec({
+                    args: ["config", "--unset", "user.email"],
+                }).catch(console.error);
             }
             if (this.oldGitOptions.gpgKeyId) {
-                yield this.exec("config", "user.signingkey", this.oldGitOptions.gpgKeyId).catch(console.error);
+                yield this.exec({
+                    args: [
+                        "config",
+                        "user.signingkey",
+                        this.oldGitOptions.gpgKeyId,
+                    ],
+                }).catch(console.error);
             }
             else {
-                yield this.exec("config", "--unset", "user.signingkey").catch(console.error);
+                yield this.exec({
+                    args: ["config", "--unset", "user.signingkey"],
+                }).catch(console.error);
             }
         });
     }

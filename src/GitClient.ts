@@ -6,6 +6,11 @@ type SetupOptions = {
     gpgKey?: string;
 };
 
+type ExecOptions = {
+    args: string[];
+    exitCodeCheck?: boolean;
+};
+
 class GitClient implements AsyncDisposable {
     private readonly gitPath: string;
     private readonly oldGitOptions: {
@@ -22,7 +27,7 @@ class GitClient implements AsyncDisposable {
         console.log(`[exec]: ${command} ${args.join(" ")}`);
     }
 
-    private async exec(...args: string[]) {
+    private async exec({ args, exitCodeCheck = true }: ExecOptions) {
         this.logCommand(this.gitPath, args);
 
         const process = spawn(this.gitPath, args, {
@@ -42,7 +47,7 @@ class GitClient implements AsyncDisposable {
 
         return new Promise<string>((resolve, reject) => {
             process.on("exit", (code) => {
-                if (code !== null && code !== 0) {
+                if (exitCodeCheck && code !== null && code !== 0) {
                     console.log(
                         "Failed to execute git command (Exit code " +
                             code +
@@ -64,77 +69,80 @@ class GitClient implements AsyncDisposable {
     }
 
     public async add(...files: string[]) {
-        await this.exec("add", ...files);
+        await this.exec({ args: ["add", ...files] });
     }
 
     public async commit(message: string, signOff: boolean) {
-        await this.exec("commit", `-${signOff ? "s" : ""}m`, message);
+        await this.exec({
+            args: ["commit", `-${signOff ? "s" : ""}m`, message],
+        });
     }
 
     public async tag(tag: string) {
-        await this.exec("tag", "-a", tag, "-m", `Tag ${tag}`);
+        await this.exec({ args: ["tag", "-a", tag, "-m", `Tag ${tag}`] });
     }
 
     public async push(remote: string, ...refs: string[]) {
-        await this.exec("push", remote, ...refs);
+        await this.exec({ args: ["push", remote, ...refs] });
     }
 
     public async setup({ name, email, gpgKey }: SetupOptions) {
         this.oldGitOptions.name =
-            (await this.exec("config", "user.name").catch(() => "")) ||
-            undefined;
+            (await this.exec({ args: ["config", "user.name"] }).catch(
+                () => "",
+            )) || undefined;
         this.oldGitOptions.email =
-            (await this.exec("config", "user.email").catch(() => "")) ||
-            undefined;
+            (await this.exec({ args: ["config", "user.email"] }).catch(
+                () => "",
+            )) || undefined;
         this.oldGitOptions.gpgKeyId =
-            (await this.exec("config", "user.signingkey").catch(() => "")) ||
-            undefined;
+            (await this.exec({ args: ["config", "user.signingkey"] }).catch(
+                () => "",
+            )) || undefined;
 
-        await this.exec("config", "user.name", name);
-        await this.exec("config", "user.email", email);
+        await this.exec({ args: ["config", "user.name", name] });
+        await this.exec({ args: ["config", "user.email", email] });
 
         if (gpgKey) {
             const keyId = await this.importGPGKey(gpgKey);
-            await this.exec("config", "user.signingkey", keyId);
-            await this.exec("config", "commit.gpgSign", "true");
+            await this.exec({ args: ["config", "user.signingkey", keyId] });
+            await this.exec({ args: ["config", "commit.gpgSign", "true"] });
         }
     }
 
     private async teardown() {
         if (this.oldGitOptions.name) {
-            await this.exec(
-                "config",
-                "user.name",
-                this.oldGitOptions.name,
-            ).catch(console.error);
+            await this.exec({
+                args: ["config", "user.name", this.oldGitOptions.name],
+            }).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.name").catch(
+            await this.exec({ args: ["config", "--unset", "user.name"] }).catch(
                 console.error,
             );
         }
 
         if (this.oldGitOptions.email) {
-            await this.exec(
-                "config",
-                "user.email",
-                this.oldGitOptions.email,
-            ).catch(console.error);
+            await this.exec({
+                args: ["config", "user.email", this.oldGitOptions.email],
+            }).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.email").catch(
-                console.error,
-            );
+            await this.exec({
+                args: ["config", "--unset", "user.email"],
+            }).catch(console.error);
         }
 
         if (this.oldGitOptions.gpgKeyId) {
-            await this.exec(
-                "config",
-                "user.signingkey",
-                this.oldGitOptions.gpgKeyId,
-            ).catch(console.error);
+            await this.exec({
+                args: [
+                    "config",
+                    "user.signingkey",
+                    this.oldGitOptions.gpgKeyId,
+                ],
+            }).catch(console.error);
         } else {
-            await this.exec("config", "--unset", "user.signingkey").catch(
-                console.error,
-            );
+            await this.exec({
+                args: ["config", "--unset", "user.signingkey"],
+            }).catch(console.error);
         }
     }
 
