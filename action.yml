@@ -66,6 +66,10 @@ inputs:
     git-push-branch:
         description: "The branch to push the commit and tag to."
         required: false
+    metadata-file:
+        description: "The path to the file that contains the metadata."
+        required: false
+        default: ".github/cra-metadata.json"
 runs:
     using: node20
     main: "build/index.js"

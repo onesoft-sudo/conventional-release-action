@@ -32997,6 +32997,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const exec_1 = __nccwpck_require__(1514);
+const crypto = __nccwpck_require__(6113);
 class GitClient {
     constructor(gitPath) {
         this.oldGitOptions = {};
@@ -33021,6 +33022,44 @@ class GitClient {
                 throw new Error(`Failed to execute git command.`);
             }
             return stdout;
+        });
+    }
+    getCommits(start, end) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const boundary = crypto.randomBytes(64).toString("hex");
+            const output = (yield this.execWithOutput({
+                args: [
+                    "log",
+                    "--no-decorate",
+                    "--no-color",
+                    `--pretty=format:%H %B\n${boundary}`,
+                    start && `${start}${end ? `..${end}` : ""}`,
+                ].filter(Boolean),
+            })).trim();
+            const commits = [];
+            for (let i = 0; i < output.length; i++) {
+                let sha = "";
+                while (output[i] !== " " && i < output.length) {
+                    sha += output[i];
+                    i++;
+                }
+                i++;
+                let message = "";
+                while (i < output.length) {
+                    if (output[i] === "\n" &&
+                        output.slice(i + 1, i + boundary.length + 1) === boundary) {
+                        i += boundary.length;
+                        break;
+                    }
+                    message += output[i];
+                    i++;
+                }
+                commits.push({
+                    id: sha.trim(),
+                    message: message.trim(),
+                });
+            }
+            return commits;
         });
     }
     add(...files) {
@@ -33319,6 +33358,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
+const fs_1 = __nccwpck_require__(7147);
 const promises_1 = __nccwpck_require__(3292);
 const GitClient_1 = __nccwpck_require__(9367);
 const VersionManager_1 = __nccwpck_require__(1526);
@@ -33347,11 +33387,23 @@ function run() {
             const gitPush = core.getInput("git-push") === "true";
             const gitPushRemote = core.getInput("git-push-remote") || "origin";
             const gitPushBranch = core.getInput("git-push-branch") || undefined;
-            console.log(`Using git: ${gitPath}`);
-            const commits = github.context.payload.commits.map((commit) => ({
-                message: commit.message,
-                id: commit.id,
-            }));
+            const metadataFile = core.getInput("metadata-file");
+            core.info(`Metadata file: ${metadataFile}`);
+            let metadataFileJSON;
+            if (!(0, fs_1.existsSync)(metadataFile) || !createCommit) {
+                if (createCommit) {
+                    core.info("Metadata file not found, will be created after the first run.");
+                }
+                metadataFileJSON = {
+                    lastReadCommit: github.context.payload.before,
+                };
+            }
+            else {
+                metadataFileJSON = JSON.parse(yield (0, promises_1.readFile)(metadataFile, "utf-8"));
+            }
+            const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
+            const versionManager = new VersionManager_1.default();
+            const commits = yield gitClient.getCommits(metadataFileJSON.lastReadCommit, github.context.payload.after);
             if (commits.length === 0) {
                 core.info("No new commits found.");
                 return;
@@ -33360,8 +33412,6 @@ function run() {
             for (const commit of commits) {
                 core.info(`- ${commit.id}: ${commit.message}`);
             }
-            const gitClient = __addDisposableResource(env_1, new GitClient_1.default("/usr/bin/git"), true);
-            const versionManager = new VersionManager_1.default();
             if (allowedCommitTypes.length > 0) {
                 versionManager.setAllowedCommitTypes(allowedCommitTypes);
             }
@@ -33398,6 +33448,7 @@ function run() {
                 gpgKey: gitGPPKey || undefined,
             });
             if (createCommit) {
+                yield gitClient.add(metadataFileJSON.lastReadCommit);
                 yield gitClient.add(versionJsonFile);
                 yield gitClient.commit(commitMessageFormat.replaceAll("%s", updatedVersion), gitSignOff);
             }
@@ -33416,6 +33467,7 @@ function run() {
                 ];
                 yield gitClient.push(...pushArgs.filter(Boolean));
             }
+            yield (0, promises_1.writeFile)(metadataFile, JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n");
         }
         catch (e_1) {
             env_1.error = e_1;

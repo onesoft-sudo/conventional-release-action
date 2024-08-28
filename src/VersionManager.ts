@@ -1,9 +1,5 @@
 import * as semver from "semver";
-
-export type Commit = {
-    message: string;
-    id: string;
-};
+import type { Commit } from "./GitClient";
 
 class VersionManager {
     private allowedCommitTypes = [

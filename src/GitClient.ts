@@ -1,4 +1,5 @@
 import { exec, getExecOutput } from "@actions/exec";
+import * as crypto from "crypto";
 
 type SetupOptions = {
     name: string;
@@ -9,6 +10,11 @@ type SetupOptions = {
 type ExecOptions = {
     args: string[];
     exitCodeCheck?: boolean;
+};
+
+export type Commit = {
+    message: string;
+    id: string;
 };
 
 class GitClient implements AsyncDisposable {
@@ -43,6 +49,55 @@ class GitClient implements AsyncDisposable {
         }
 
         return stdout;
+    }
+
+    public async getCommits(start?: string, end?: string) {
+        const boundary = crypto.randomBytes(64).toString("hex");
+        const output = (
+            await this.execWithOutput({
+                args: [
+                    "log",
+                    "--no-decorate",
+                    "--no-color",
+                    `--pretty=format:%H %B\n${boundary}`,
+                    start && `${start}${end ? `..${end}` : ""}`,
+                ].filter(Boolean) as string[],
+            })
+        ).trim();
+        const commits: Commit[] = [];
+
+        for (let i = 0; i < output.length; i++) {
+            let sha = "";
+
+            while (output[i] !== " " && i < output.length) {
+                sha += output[i];
+                i++;
+            }
+
+            i++;
+
+            let message = "";
+
+            while (i < output.length) {
+                if (
+                    output[i] === "\n" &&
+                    output.slice(i + 1, i + boundary.length + 1) === boundary
+                ) {
+                    i += boundary.length;
+                    break;
+                }
+
+                message += output[i];
+                i++;
+            }
+
+            commits.push({
+                id: sha.trim(),
+                message: message.trim(),
+            });
+        }
+
+        return commits;
     }
 
     public async add(...files: string[]) {

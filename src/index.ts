@@ -1,8 +1,9 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
+import { existsSync } from "fs";
 import { readFile, writeFile } from "fs/promises";
 import GitClient from "./GitClient";
-import VersionManager, { Commit } from "./VersionManager";
+import VersionManager from "./VersionManager";
 
 type VersionManagerModule = {
     resolver?: (versionManager: VersionManager) => string | Promise<string>;
@@ -35,14 +36,34 @@ async function run() {
     const gitPush = core.getInput("git-push") === "true";
     const gitPushRemote = core.getInput("git-push-remote") || "origin";
     const gitPushBranch = core.getInput("git-push-branch") || undefined;
+    const metadataFile = core.getInput("metadata-file");
 
-    console.log(`Using git: ${gitPath}`);
+    core.info(`Metadata file: ${metadataFile}`);
 
-    const commits: Commit[] = github.context.payload.commits.map(
-        (commit: Commit) => ({
-            message: commit.message,
-            id: commit.id,
-        }),
+    let metadataFileJSON: {
+        lastReadCommit: string;
+    };
+
+    if (!existsSync(metadataFile) || !createCommit) {
+        if (createCommit) {
+            core.info(
+                "Metadata file not found, will be created after the first run.",
+            );
+        }
+
+        metadataFileJSON = {
+            lastReadCommit: github.context.payload.before,
+        };
+    } else {
+        metadataFileJSON = JSON.parse(await readFile(metadataFile, "utf-8"));
+    }
+
+    await using gitClient = new GitClient(gitPath);
+    const versionManager = new VersionManager();
+
+    const commits = await gitClient.getCommits(
+        metadataFileJSON.lastReadCommit,
+        github.context.payload.after,
     );
 
     if (commits.length === 0) {
@@ -55,9 +76,6 @@ async function run() {
     for (const commit of commits) {
         core.info(`- ${commit.id}: ${commit.message}`);
     }
-
-    await using gitClient = new GitClient("/usr/bin/git");
-    const versionManager = new VersionManager();
 
     if (allowedCommitTypes.length > 0) {
         versionManager.setAllowedCommitTypes(allowedCommitTypes);
@@ -122,6 +140,7 @@ async function run() {
     });
 
     if (createCommit) {
+        await gitClient.add(metadataFileJSON.lastReadCommit);
         await gitClient.add(versionJsonFile);
         await gitClient.commit(
             commitMessageFormat.replaceAll("%s", updatedVersion),
@@ -147,6 +166,11 @@ async function run() {
             ...(pushArgs.filter(Boolean) as [string, string, string]),
         );
     }
+
+    await writeFile(
+        metadataFile,
+        JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n",
+    );
 }
 
 run()
