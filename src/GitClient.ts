@@ -52,7 +52,9 @@ class GitClient implements AsyncDisposable {
     }
 
     public async pull(remote: string, branch: string) {
-        await this.exec({ args: ["pull", "--unshallow", remote, branch] });
+        await this.exec({
+            args: ["pull", "--unshallow", remote, branch, "--tags"],
+        });
     }
 
     public async getFirstCommit() {
