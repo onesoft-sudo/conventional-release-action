@@ -139,8 +139,12 @@ class GitClient implements AsyncDisposable {
             input: Buffer.from(key, "utf-8"),
         });
 
+        console.log(stdout.split(/\n+/));
+
         for (const data of stdout.split(/\n+/)) {
             const match = data.match(/^gpg: key ([0-9A-F]+):/);
+
+            console.log(match === null ? null : [...match]);
 
             if (match) {
                 keyId = match[1];
