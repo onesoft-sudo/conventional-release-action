@@ -1,8 +1,71 @@
 name: "conventional-release-action"
 description: "A GitHub Action to automatically tag and create releases based on conventional commits."
 outputs:
-    tag:
-        description: "The tag name of the release."
+    version:
+        description: "The new version."
+inputs:
+    allowed-commit-types:
+        description: "A comma-separated list of commit types that are allowed."
+        required: false
+    version-json-file:
+        description: "The path to the JSON file that contains the version information."
+        required: false
+    version-manager-module:
+        description: "The path to a commonjs module that exports a function to manage the version."
+        required: false
+    json-tab-width:
+        description: "The number of spaces to use for indentation in the JSON file."
+        required: false
+        default: 4
+    create-tag:
+        description: "Whether to create a tag for the new version."
+        required: false
+        default: true
+    create-commit:
+        description: "Whether to create a commit for the new version."
+        required: false
+        default: true
+    create-tag-prefix:
+        description: "The prefix to use for the tag."
+        required: false
+        default: "v"
+    commit-message-format:
+        description: "The format to use for the commit message."
+        required: false
+        default: "chore(release): v%s [skip ci]"
+    git-path:
+        description: "The path to the git executable."
+        required: false
+        default: "git"
+    git-user-name:
+        description: "The name to use for the git user."
+        required: false
+        default: "Conventional Release Action"
+    git-user-email:
+        description: "The email to use for the git user."
+        required: false
+        default: "conventional-releases@onesoftnet.eu.org"
+    git-gpg-key:
+        description: "The GPG key (ASCII) to use for signing the commit."
+        required: false
+    git-sign-off:
+        description: "Whether to sign off the commit."
+        required: false
+        default: false
+    git-push:
+        description: "Whether to push the commit and tag."
+        required: false
+        default: true
+    git-push-remote:
+        description: "The remote to push the commit and tag to."
+        required: false
+        default: "origin"
+    git-push-remote-url:
+        description: "The URL of the remote to push the commit and tag to."
+        required: false
+    git-push-branch:
+        description: "The branch to push the commit and tag to."
+        required: false
 runs:
     using: node20
     main: "build/index.js"
