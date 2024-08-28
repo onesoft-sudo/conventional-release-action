@@ -150,6 +150,8 @@ async function run() {
     core.setOutput("version", updatedVersion);
 
     if (createCommit) {
+        metadataFileJSON.lastReadCommit = github.context.payload.after;
+
         await writeFile(
             metadataFile,
             JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n",
