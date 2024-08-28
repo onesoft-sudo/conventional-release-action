@@ -33121,8 +33121,8 @@ class GitClient {
             const { stdout } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
                 input: Buffer.from(key, "utf-8"),
             });
-            console.log(stdout.split(/\n+/));
-            for (const data of stdout.split(/\n+/)) {
+            console.log(stdout.split(/\r?\n/g));
+            for (const data of stdout.split(/\r?\n/g)) {
                 const match = data.match(/^gpg: key ([0-9A-F]+):/);
                 console.log(match === null ? null : [...match]);
                 if (match) {
