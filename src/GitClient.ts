@@ -88,17 +88,20 @@ class GitClient implements AsyncDisposable {
 
     public async setup({ name, email, gpgKey }: SetupOptions) {
         this.oldGitOptions.name =
-            (await this.exec({ args: ["config", "user.name"] }).catch(
-                () => "",
-            )) || undefined;
+            (await this.exec({
+                args: ["config", "user.name"],
+                exitCodeCheck: false,
+            }).catch(() => "")) || undefined;
         this.oldGitOptions.email =
-            (await this.exec({ args: ["config", "user.email"] }).catch(
-                () => "",
-            )) || undefined;
+            (await this.exec({
+                args: ["config", "user.email"],
+                exitCodeCheck: false,
+            }).catch(() => "")) || undefined;
         this.oldGitOptions.gpgKeyId =
-            (await this.exec({ args: ["config", "user.signingkey"] }).catch(
-                () => "",
-            )) || undefined;
+            (await this.exec({
+                args: ["config", "user.signingkey"],
+                exitCodeCheck: false,
+            }).catch(() => "")) || undefined;
 
         await this.exec({ args: ["config", "user.name", name] });
         await this.exec({ args: ["config", "user.email", email] });
@@ -114,20 +117,24 @@ class GitClient implements AsyncDisposable {
         if (this.oldGitOptions.name) {
             await this.exec({
                 args: ["config", "user.name", this.oldGitOptions.name],
+                exitCodeCheck: false,
             }).catch(console.error);
         } else {
-            await this.exec({ args: ["config", "--unset", "user.name"] }).catch(
-                console.error,
-            );
+            await this.exec({
+                args: ["config", "--unset", "user.name"],
+                exitCodeCheck: false,
+            }).catch(console.error);
         }
 
         if (this.oldGitOptions.email) {
             await this.exec({
                 args: ["config", "user.email", this.oldGitOptions.email],
+                exitCodeCheck: false,
             }).catch(console.error);
         } else {
             await this.exec({
                 args: ["config", "--unset", "user.email"],
+                exitCodeCheck: false,
             }).catch(console.error);
         }
 
@@ -138,10 +145,12 @@ class GitClient implements AsyncDisposable {
                     "user.signingkey",
                     this.oldGitOptions.gpgKeyId,
                 ],
+                exitCodeCheck: false,
             }).catch(console.error);
         } else {
             await this.exec({
                 args: ["config", "--unset", "user.signingkey"],
+                exitCodeCheck: false,
             }).catch(console.error);
         }
     }

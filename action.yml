@@ -44,7 +44,7 @@ inputs:
     git-user-email:
         description: "The email to use for the git user."
         required: false
-        default: "conventional-releases@onesoftnet.eu.org"
+        default: "conventional-release@onesoftnet.eu.org"
     git-gpg-key:
         description: "The GPG key (ASCII) to use for signing the commit."
         required: false

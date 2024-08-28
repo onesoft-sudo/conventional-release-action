@@ -31831,11 +31831,20 @@ class GitClient {
     setup(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, gpgKey }) {
             this.oldGitOptions.name =
-                (yield this.exec({ args: ["config", "user.name"] }).catch(() => "")) || undefined;
+                (yield this.exec({
+                    args: ["config", "user.name"],
+                    exitCodeCheck: false,
+                }).catch(() => "")) || undefined;
             this.oldGitOptions.email =
-                (yield this.exec({ args: ["config", "user.email"] }).catch(() => "")) || undefined;
+                (yield this.exec({
+                    args: ["config", "user.email"],
+                    exitCodeCheck: false,
+                }).catch(() => "")) || undefined;
             this.oldGitOptions.gpgKeyId =
-                (yield this.exec({ args: ["config", "user.signingkey"] }).catch(() => "")) || undefined;
+                (yield this.exec({
+                    args: ["config", "user.signingkey"],
+                    exitCodeCheck: false,
+                }).catch(() => "")) || undefined;
             yield this.exec({ args: ["config", "user.name", name] });
             yield this.exec({ args: ["config", "user.email", email] });
             if (gpgKey) {
@@ -31850,19 +31859,25 @@ class GitClient {
             if (this.oldGitOptions.name) {
                 yield this.exec({
                     args: ["config", "user.name", this.oldGitOptions.name],
+                    exitCodeCheck: false,
                 }).catch(console.error);
             }
             else {
-                yield this.exec({ args: ["config", "--unset", "user.name"] }).catch(console.error);
+                yield this.exec({
+                    args: ["config", "--unset", "user.name"],
+                    exitCodeCheck: false,
+                }).catch(console.error);
             }
             if (this.oldGitOptions.email) {
                 yield this.exec({
                     args: ["config", "user.email", this.oldGitOptions.email],
+                    exitCodeCheck: false,
                 }).catch(console.error);
             }
             else {
                 yield this.exec({
                     args: ["config", "--unset", "user.email"],
+                    exitCodeCheck: false,
                 }).catch(console.error);
             }
             if (this.oldGitOptions.gpgKeyId) {
@@ -31872,11 +31887,13 @@ class GitClient {
                         "user.signingkey",
                         this.oldGitOptions.gpgKeyId,
                     ],
+                    exitCodeCheck: false,
                 }).catch(console.error);
             }
             else {
                 yield this.exec({
                     args: ["config", "--unset", "user.signingkey"],
+                    exitCodeCheck: false,
                 }).catch(console.error);
             }
         });
