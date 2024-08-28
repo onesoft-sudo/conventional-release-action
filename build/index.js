@@ -33118,11 +33118,11 @@ class GitClient {
     importGPGKey(key) {
         return __awaiter(this, void 0, void 0, function* () {
             let keyId;
-            const { stdout } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
+            const { stdout, stderr } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
                 input: Buffer.from(key, "utf-8"),
             });
-            console.log(stdout.split(/\r?\n/g));
-            for (const data of stdout.split(/\r?\n/g)) {
+            console.log(`${stdout}\n${stderr}`.split(/\r?\n/g));
+            for (const data of `${stdout}\n${stderr}`.split(/\r?\n/g)) {
                 const match = data.match(/^gpg: key ([0-9A-F]+):/);
                 console.log(match === null ? null : [...match]);
                 if (match) {
