@@ -135,20 +135,17 @@ class GitClient implements AsyncDisposable {
     private async importGPGKey(key: string) {
         let keyId: string | undefined;
 
-        await exec("gpg", ["--import"], {
+        const { stdout } = await getExecOutput("gpg", ["--import"], {
             input: Buffer.from(key, "utf-8"),
-            listeners: {
-                stdout: (data) => {
-                    const match = data
-                        .toString()
-                        .match(/^gpg: key ([0-9A-F]+):/);
-
-                    if (match) {
-                        keyId = match[1];
-                    }
-                },
-            },
         });
+
+        for (const data of stdout.split(/\n+/)) {
+            const match = data.match(/^gpg: key ([0-9A-F]+):/);
+
+            if (match) {
+                keyId = match[1];
+            }
+        }
 
         if (!keyId) {
             throw new Error("Failed to import GPG key.");
