@@ -15,3 +15,4 @@ jobs:
             - uses: ./
               with:
                   commit-message-format: "release: v%s [skip ci]"
+                  git-gpg-key: ${{ secrets.GPG_PRIVATE_KEY }}
