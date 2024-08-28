@@ -81,11 +81,14 @@ class GitClient implements AsyncDisposable {
 
     public async setup({ name, email, gpgKey }: SetupOptions) {
         this.oldGitOptions.name =
-            (await this.exec("config", "user.name")) || undefined;
+            (await this.exec("config", "user.name").catch(() => "")) ||
+            undefined;
         this.oldGitOptions.email =
-            (await this.exec("config", "user.email")) || undefined;
+            (await this.exec("config", "user.email").catch(() => "")) ||
+            undefined;
         this.oldGitOptions.gpgKeyId =
-            (await this.exec("config", "user.signingkey")) || undefined;
+            (await this.exec("config", "user.signingkey").catch(() => "")) ||
+            undefined;
 
         await this.exec("config", "user.name", name);
         await this.exec("config", "user.email", email);

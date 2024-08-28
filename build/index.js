@@ -31829,11 +31829,14 @@ class GitClient {
     setup(_a) {
         return __awaiter(this, arguments, void 0, function* ({ name, email, gpgKey }) {
             this.oldGitOptions.name =
-                (yield this.exec("config", "user.name")) || undefined;
+                (yield this.exec("config", "user.name").catch(() => "")) ||
+                    undefined;
             this.oldGitOptions.email =
-                (yield this.exec("config", "user.email")) || undefined;
+                (yield this.exec("config", "user.email").catch(() => "")) ||
+                    undefined;
             this.oldGitOptions.gpgKeyId =
-                (yield this.exec("config", "user.signingkey")) || undefined;
+                (yield this.exec("config", "user.signingkey").catch(() => "")) ||
+                    undefined;
             yield this.exec("config", "user.name", name);
             yield this.exec("config", "user.email", email);
             if (gpgKey) {
