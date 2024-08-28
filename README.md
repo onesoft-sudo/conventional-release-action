@@ -8,25 +8,25 @@ A GitHub Action to automate the conventional release workflow.
 name: Release
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    release:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: onesoft-sudo/conventional-release-action@v1
-              id: automatic_versioning
+      - uses: onesoft-sudo/conventional-release-action@v1
+        id: automatic_versioning
 
-            - uses: ncipollo/release-action@v2
-              if: ${{ steps.automatic_versioning.outputs.version != '' }}
-              with:
-                  tag: ${{ steps.automatic_versioning.outputs.version }}
-                  draft: false
-                  prerelease: false
+      - uses: ncipollo/release-action@v2
+        if: ${{ steps.automatic_versioning.outputs.version != '' }}
+        with:
+          tag: ${{ steps.automatic_versioning.outputs.version }}
+          draft: false
+          prerelease: false
 ```
 
 ## Inputs
@@ -40,5 +40,5 @@ This is free software: you are free to change and redistribute it. There is NO W
 
 ## Acknowledgements
 
--   [Conventional Commits](https://www.conventionalcommits.org/)
--   [Semantic Versioning](https://semver.org/)
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Semantic Versioning](https://semver.org/)
