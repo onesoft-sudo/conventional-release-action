@@ -35370,7 +35370,7 @@ class ChangeLogGenerator {
                         notes += `### ${ChangeLogGenerator.COMMIT_CLASSIFICATION[key]}\n`;
                         headerAdded = true;
                     }
-                    notes += `* \`[[${commit.shortId}](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})]\` **${typeWithSubject[1]}**: ${head.replace(/^([A-Za-z0-9-_](.*?))\!?:/, "").trim()}\n`;
+                    notes += `* [[\`${commit.shortId}\`](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[1]}**: ${head.replace(/^([A-Za-z0-9-_](.*?))\!?:/, "").trim()}\n`;
                 }
                 if (headerAdded) {
                     notes += "\n";
