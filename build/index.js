@@ -35338,11 +35338,9 @@ class ChangeLogGenerator {
     }
     generateChangeLog(file_1) {
         return __awaiter(this, arguments, void 0, function* (file, format = "plain") {
-            const { stdout } = yield (0, exec_1.getExecOutput)(process.argv0, [
-                "/tmp/genchangelog",
-                "-f",
-                format,
-            ]);
+            const { stdout } = yield (0, exec_1.getExecOutput)(process.argv0, ["/tmp/genchangelog", "-f", format], {
+                silent: true,
+            });
             yield (0, promises_1.writeFile)(file, stdout);
         });
     }
