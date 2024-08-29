@@ -35462,7 +35462,7 @@ class GitClient {
                     "log",
                     "--no-decorate",
                     "--no-color",
-                    `--pretty=format:%h %H %B\n${boundary}`,
+                    `--pretty=format:%H %h %B\n${boundary}`,
                     start && `${start}${end ? `..${end}` : ""}`,
                 ].filter(Boolean),
             })).trim();
