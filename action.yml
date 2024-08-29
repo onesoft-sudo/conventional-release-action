@@ -74,6 +74,13 @@ inputs:
     description: "The path to the file that contains the metadata."
     required: false
     default: ".github/cra-metadata.json"
+  changelog-file:
+    description: "The path to the file where the generated changelog will be written."
+    required: false
+  changelog-format:
+    description: "The format to use for the changelog. Can be 'markdown' or 'plain'."
+    required: false
+    default: "plain"
 runs:
   using: node20
   main: "build/index.js"

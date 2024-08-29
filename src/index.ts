@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { existsSync } from "fs";
 import { readFile, writeFile } from "fs/promises";
+import ChangeLogGenerator from "./ChangeLogGenerator";
 import GitClient from "./GitClient";
 import VersionManager from "./VersionManager";
 
@@ -37,6 +38,8 @@ async function run() {
     const gitPushRemote = core.getInput("git-push-remote") || "origin";
     const gitPushBranch = core.getInput("git-push-branch") || undefined;
     const metadataFile = core.getInput("metadata-file");
+    const changelogFile = core.getInput("changelog-file") || undefined;
+    const changelogFormat = core.getInput("changelog-format") || "plain";
 
     core.info(`Metadata file: ${metadataFile}`);
 
@@ -147,6 +150,24 @@ async function run() {
     await updateVersion(versionManager, updatedVersion);
     core.setOutput("version", updatedVersion);
 
+    if (changelogFile) {
+        if (
+            changelogFormat &&
+            !["markdown", "plain"].includes(changelogFormat)
+        ) {
+            throw new Error(
+                `Invalid changelog format "${changelogFormat}". Must be either "markdown" or "plain".`,
+            );
+        }
+
+        await using changeLogGenerator = new ChangeLogGenerator();
+        await changeLogGenerator.setup();
+        await changeLogGenerator.generateChangeLog(
+            changelogFile,
+            changelogFormat as "markdown" | "plain",
+        );
+    }
+
     if (createCommit) {
         metadataFileJSON.lastReadCommit = github.context.payload.after;
 
@@ -154,6 +175,10 @@ async function run() {
             metadataFile,
             JSON.stringify(metadataFileJSON, null, jsonTabWidth) + "\n",
         );
+
+        if (changelogFile) {
+            await gitClient.add(changelogFile);
+        }
 
         await gitClient.add(metadataFile);
         await gitClient.add(versionJsonFile);

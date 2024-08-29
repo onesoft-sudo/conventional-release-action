@@ -1,0 +1,168 @@
+29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+        chore: update readme
+
+28-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+        chore: update readme
+
+        chore: update .prettierrc
+
+        chore: update readme
+
+        chore: update action.yml
+
+        chore: update action.yml
+
+        chore: update package.json
+
+        fix: update version number
+
+        fix: a test fix commit
+
+        ci: add release workflow
+
+        ci: add release workflow
+
+        ci: add release workflow
+
+        refactor: remove unneeded console.log() calls
+
+        fix: another fix
+
+        fix: another fix
+        Version-suffix: -foo4
+
+        fix: not updating metadata file
+
+        fix: just a fix
+
+        fix: not updating metadata file
+
+        fix: a fix
+
+        feat: store metadata file
+
+        feat: store metadata file
+
+        feat: store metadata file
+
+        feat: store metadata file
+
+        feat: store metadata file
+
+        feat: store metadata file
+
+        style: remove debug logs
+
+        fix: gpg errors
+
+        fix: gpg errors
+
+        fix: gpg errors
+
+        fix: gpg key import errors
+
+        fix: gpg key import errors
+
+        feat: new feature [test]
+
+        ci: update build workflow
+
+        fix: exit code check
+
+        fix: use @actions/exec
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: git failure
+
+        fix: rebuild
+
+        fix: rebuild
+
+        fix: rebuild
+
+        feat: git operations
+
+        ci: update workflows
+
+        chore: add .vscode
+
+28-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+        release: v1.0.1 [skip ci]
+
+        release: v24.1.3 [skip ci]
+
+        release: v24.1.2 [skip ci]
+
+        release: v24.1.2-foo4 [skip ci]
+
+        release: v24.1.1 [skip ci]
+
+        release: v24.1.0 [skip ci]
+
+        release: v24.1.0foo0 [skip ci]
+
+        release: v23.1.0foo0 [skip ci]
+
+        release: v22.1.0foo0 [skip ci]
+
+        release: v21.0.7 [skip ci]
+
+        release: v21.0.6 [skip ci]
+
+        release: v21.0.5 [skip ci]
+
+        release: v21.0.4 [skip ci]
+
+28-08-2024  Conventional Release Action <conventional-releases@onesoftnet.eu.org>
+
+        release: v21.0.2 [skip ci]
+
+        release: v21.0.1 [skip ci]
+
+27-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+        chore: create LICENSE
+
+        fix: do not reverse commit list
+
+        feat: add git client class
+
+        refactor: remove unused imports
+
+        fix: invalid revision range
+
+        fix: invalid revision range
+
+        fix: invalid revision range
+
+        fix: invalid revision range
+
+        fix: invalid revision range
+
+        feat: finalize version bumping
+
+        feat\!: a 2breaking change
+        Version-suffix: foo0
+
+        feat!: breaking change
+        Version-Suffix: foo0
+
+        chore: rebuild
+
+        feat: add ncc build files
+
+        feat: initial commit

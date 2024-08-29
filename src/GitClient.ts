@@ -15,6 +15,7 @@ type ExecOptions = {
 export type Commit = {
     message: string;
     id: string;
+    shortId: string;
 };
 
 class GitClient implements AsyncDisposable {
@@ -73,7 +74,7 @@ class GitClient implements AsyncDisposable {
                     "log",
                     "--no-decorate",
                     "--no-color",
-                    `--pretty=format:%H %B\n${boundary}`,
+                    `--pretty=format:%h %H %B\n${boundary}`,
                     start && `${start}${end ? `..${end}` : ""}`,
                 ].filter(Boolean) as string[],
             })
@@ -81,10 +82,19 @@ class GitClient implements AsyncDisposable {
         const commits: Commit[] = [];
 
         for (let i = 0; i < output.length; i++) {
-            let sha = "";
+            let id = "";
 
             while (output[i] !== " " && i < output.length) {
-                sha += output[i];
+                id += output[i];
+                i++;
+            }
+
+            i++;
+
+            let shortId = "";
+
+            while (output[i] !== " " && i < output.length) {
+                shortId += output[i];
                 i++;
             }
 
@@ -106,8 +116,9 @@ class GitClient implements AsyncDisposable {
             }
 
             commits.push({
-                id: sha.trim(),
+                id: id.trim(),
                 message: message.trim(),
+                shortId: shortId.trim(),
             });
         }
 
