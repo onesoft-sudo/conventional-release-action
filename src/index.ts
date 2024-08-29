@@ -40,6 +40,7 @@ async function run() {
     const metadataFile = core.getInput("metadata-file");
     const changelogFile = core.getInput("changelog-file") || undefined;
     const changelogFormat = core.getInput("changelog-format") || "plain";
+    const addReleaseNotes = core.getInput("add-release-notes") === "true";
 
     core.info(`Metadata file: ${metadataFile}`);
 
@@ -48,6 +49,7 @@ async function run() {
     };
 
     await using gitClient = new GitClient(gitPath);
+    await using changeLogGenerator = new ChangeLogGenerator();
     const versionManager = new VersionManager();
 
     await gitClient.setup({
@@ -138,7 +140,8 @@ async function run() {
     const currentVersion = await getLastVersion(versionManager);
     core.info(`Current version: ${currentVersion}`);
 
-    const updatedVersion = await versionManager.bump(currentVersion);
+    const { updatedVersion, classifiedCommits } =
+        await versionManager.bump(currentVersion);
 
     if (updatedVersion === currentVersion) {
         core.info("No new version was generated.");
@@ -150,6 +153,16 @@ async function run() {
     await updateVersion(versionManager, updatedVersion);
     core.setOutput("version", updatedVersion);
 
+    if (addReleaseNotes) {
+        const releaseNotes = await changeLogGenerator.createReleaseNotes(
+            classifiedCommits,
+            github.context.repo.owner,
+            github.context.repo.repo,
+        );
+
+        core.setOutput("release_notes", releaseNotes);
+    }
+
     if (changelogFile) {
         if (
             changelogFormat &&
@@ -160,7 +173,6 @@ async function run() {
             );
         }
 
-        await using changeLogGenerator = new ChangeLogGenerator();
         await changeLogGenerator.setup();
         await changeLogGenerator.generateChangeLog(
             changelogFile,

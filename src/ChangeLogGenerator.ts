@@ -1,10 +1,23 @@
 import { getExecOutput } from "@actions/exec";
 import axios from "axios";
 import { unlink, writeFile } from "fs/promises";
+import { ClassifiedCommits } from "./VersionManager";
 
 class ChangeLogGenerator implements AsyncDisposable {
     private static readonly OSN_COMMONS_GENCHANGELOG_DL_URL =
         "https://svn.onesoftnet.eu.org/svn/osn-commons/trunk/git/genchangelog";
+
+    private static readonly COMMIT_CLASSIFICATION: Record<
+        keyof ClassifiedCommits,
+        string
+    > = {
+        breakingChanges: "Breaking Changes",
+        features: "New Features",
+        fixes: "Bug Fixes",
+        others: "Others",
+    };
+
+    private setupDone = false;
 
     public async setup() {
         const response = await axios.get(
@@ -15,6 +28,8 @@ class ChangeLogGenerator implements AsyncDisposable {
         await writeFile("/tmp/genchangelog", genChangeLogScript, {
             mode: 0o755,
         });
+
+        this.setupDone = true;
     }
 
     public async generateChangeLog(
@@ -32,8 +47,53 @@ class ChangeLogGenerator implements AsyncDisposable {
         await writeFile(file, stdout);
     }
 
+    public async createReleaseNotes(
+        classifiedCommits: ClassifiedCommits,
+        githubUsername: string,
+        githubRepo: string,
+    ) {
+        let notes = "";
+
+        for (const key in classifiedCommits) {
+            const commits = classifiedCommits[key as keyof ClassifiedCommits];
+
+            if (commits.length === 0) {
+                continue;
+            }
+
+            let headerAdded = false;
+
+            for (const commit of commits) {
+                const typeWithSubject = commit.message.match(
+                    /^([A-Za-z0-9-_](.*?))\!?:/,
+                );
+
+                if (!typeWithSubject) {
+                    continue;
+                }
+
+                if (!headerAdded) {
+                    notes += `### ${ChangeLogGenerator.COMMIT_CLASSIFICATION[key as keyof typeof classifiedCommits]}\n`;
+                    headerAdded = true;
+                }
+
+                notes += `* [[${commit.shortId}](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[1]}**: ${commit.message}\n`;
+            }
+
+            if (headerAdded) {
+                notes += "\n";
+            }
+        }
+
+        return notes;
+    }
+
     public async [Symbol.asyncDispose]() {
-        return void (await unlink("/tmp/genchangelog"));
+        if (!this.setupDone) {
+            return;
+        }
+
+        return void (await unlink("/tmp/genchangelog").catch(() => {}));
     }
 }
 

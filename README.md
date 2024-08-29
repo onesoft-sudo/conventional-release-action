@@ -2,6 +2,15 @@
 
 A GitHub Action to automate the conventional release workflow.
 
+## Features
+
+- Automatically determines the version based on the commit messages.
+- Supports the [Conventional Commits](https://www.conventionalcommits.org/) specification.
+- Supports the [Semantic Versioning](https://semver.org/) specification.
+- Allows you to manually specify version types, build metadata, pre-release and even custom identifiers.
+- Can automate the generation of ChangeLog files using [OSN Commons](https://github.com/onesoft-sudo/commons).
+- Can be used to automate the creation of GitHub releases.
+
 ## Basic Usage
 
 ```yaml
@@ -16,12 +25,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: onesoft-sudo/conventional-release-action@v1
+      - name: Conventional Release Action
         id: automatic_versioning
+        uses: onesoft-sudo/conventional-release-action@v1
 
-      - uses: ncipollo/release-action@v2
+      - name: Create Release
+        uses: ncipollo/release-action@v2
         if: ${{ steps.automatic_versioning.outputs.version != '' }}
         with:
           tag: ${{ steps.automatic_versioning.outputs.version }}

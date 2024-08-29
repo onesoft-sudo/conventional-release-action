@@ -35327,6 +35327,9 @@ const exec_1 = __nccwpck_require__(1514);
 const axios_1 = __nccwpck_require__(8757);
 const promises_1 = __nccwpck_require__(3292);
 class ChangeLogGenerator {
+    constructor() {
+        this.setupDone = false;
+    }
     setup() {
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield axios_1.default.get(ChangeLogGenerator.OSN_COMMONS_GENCHANGELOG_DL_URL);
@@ -35334,6 +35337,7 @@ class ChangeLogGenerator {
             yield (0, promises_1.writeFile)("/tmp/genchangelog", genChangeLogScript, {
                 mode: 0o755,
             });
+            this.setupDone = true;
         });
     }
     generateChangeLog(file_1) {
@@ -35344,13 +35348,49 @@ class ChangeLogGenerator {
             yield (0, promises_1.writeFile)(file, stdout);
         });
     }
+    createReleaseNotes(classifiedCommits, githubUsername, githubRepo) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let notes = "";
+            for (const key in classifiedCommits) {
+                const commits = classifiedCommits[key];
+                if (commits.length === 0) {
+                    continue;
+                }
+                let headerAdded = false;
+                for (const commit of commits) {
+                    const typeWithSubject = commit.message.match(/^([A-Za-z0-9-_](.*?))\!?:/);
+                    if (!typeWithSubject) {
+                        continue;
+                    }
+                    if (!headerAdded) {
+                        notes += `### ${ChangeLogGenerator.COMMIT_CLASSIFICATION[key]}\n`;
+                        headerAdded = true;
+                    }
+                    notes += `* [[${commit.shortId}](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[1]}**: ${commit.message}\n`;
+                }
+                if (headerAdded) {
+                    notes += "\n";
+                }
+            }
+            return notes;
+        });
+    }
     [Symbol.asyncDispose]() {
         return __awaiter(this, void 0, void 0, function* () {
-            return void (yield (0, promises_1.unlink)("/tmp/genchangelog"));
+            if (!this.setupDone) {
+                return;
+            }
+            return void (yield (0, promises_1.unlink)("/tmp/genchangelog").catch(() => { }));
         });
     }
 }
 ChangeLogGenerator.OSN_COMMONS_GENCHANGELOG_DL_URL = "https://svn.onesoftnet.eu.org/svn/osn-commons/trunk/git/genchangelog";
+ChangeLogGenerator.COMMIT_CLASSIFICATION = {
+    breakingChanges: "Breaking Changes",
+    features: "New Features",
+    fixes: "Bug Fixes",
+    others: "Others",
+};
 exports["default"] = ChangeLogGenerator;
 
 
@@ -35627,14 +35667,23 @@ class VersionManager {
                 throw new Error(`Failed to parse version "${lastVersion}".`);
             }
             parsed.build = [];
+            const classifiedCommits = {
+                features: [],
+                fixes: [],
+                others: [],
+                breakingChanges: [],
+            };
             for (const commit of this.commits) {
                 const newlineIndex = commit.message.indexOf("\n");
                 const head = commit.message.slice(0, newlineIndex === -1 ? undefined : newlineIndex);
+                const body = newlineIndex === -1
+                    ? ""
+                    : commit.message.slice(newlineIndex + 1);
                 let [type] = head.split(":");
                 let increased = false;
                 let major = false;
                 const forcePrerelease = /\[(v\:)?(alpha|beta|rc|prerelease)\]/gi.test(commit.message);
-                if (type.endsWith("!")) {
+                if (type.endsWith("!") || body.includes("BREAKING CHANGE:")) {
                     type = type.slice(0, -1);
                     major = true;
                 }
@@ -35648,25 +35697,30 @@ class VersionManager {
                 const versionSuffix = commit.message.match(/\nVersion-suffix: (.*)/i);
                 if (major) {
                     parsed.inc(forcePrerelease ? "premajor" : "major");
+                    classifiedCommits.breakingChanges.push(Object.assign(Object.assign({}, commit), { prerelease: forcePrerelease, type }));
                     increased = true;
                 }
                 else {
                     if (type === "feat") {
                         parsed.inc(forcePrerelease ? "preminor" : "minor");
+                        classifiedCommits.features.push(Object.assign(Object.assign({}, commit), { prerelease: forcePrerelease, type }));
                         increased = true;
                     }
                     if (type === "fix") {
                         parsed.inc(forcePrerelease ? "prepatch" : "patch");
+                        classifiedCommits.fixes.push(Object.assign(Object.assign({}, commit), { prerelease: forcePrerelease, type }));
                         increased = true;
                     }
                 }
                 if (forcePrerelease && !increased) {
                     parsed.inc("prerelease");
+                    classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                     increased = true;
                 }
                 if (versionSuffix) {
                     if (!increased) {
                         parsed.inc("prerelease");
+                        classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                         increased = true;
                     }
                     suffix = versionSuffix[1].split(".");
@@ -35674,15 +35728,19 @@ class VersionManager {
                 if (buildMetadata) {
                     if (!increased) {
                         parsed.inc("prerelease");
+                        classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                         increased = true;
                     }
                     build = buildMetadata[1].split(".");
                 }
+                if (!increased) {
+                    classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: false, type }));
+                }
             }
-            const newVersion = parsed.toString() +
+            const updatedVersion = parsed.toString() +
                 ((suffix === null || suffix === void 0 ? void 0 : suffix.length) ? `${suffix.join(".")}` : "") +
                 ((build === null || build === void 0 ? void 0 : build.length) ? `+${build.join(".")}` : "");
-            return newVersion;
+            return { updatedVersion, classifiedCommits };
         });
     }
 }
@@ -35788,9 +35846,11 @@ function run() {
             const metadataFile = core.getInput("metadata-file");
             const changelogFile = core.getInput("changelog-file") || undefined;
             const changelogFormat = core.getInput("changelog-format") || "plain";
+            const addReleaseNotes = core.getInput("add-release-notes") === "true";
             core.info(`Metadata file: ${metadataFile}`);
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
+            const changeLogGenerator = __addDisposableResource(env_1, new ChangeLogGenerator_1.default(), true);
             const versionManager = new VersionManager_1.default();
             yield gitClient.setup({
                 name: gitUserName,
@@ -35845,7 +35905,7 @@ function run() {
             }));
             const currentVersion = yield getLastVersion(versionManager);
             core.info(`Current version: ${currentVersion}`);
-            const updatedVersion = yield versionManager.bump(currentVersion);
+            const { updatedVersion, classifiedCommits } = yield versionManager.bump(currentVersion);
             if (updatedVersion === currentVersion) {
                 core.info("No new version was generated.");
                 core.setOutput("version", "");
@@ -35854,26 +35914,17 @@ function run() {
             core.info(`Updated version: ${updatedVersion}`);
             yield updateVersion(versionManager, updatedVersion);
             core.setOutput("version", updatedVersion);
+            if (addReleaseNotes) {
+                const releaseNotes = yield changeLogGenerator.createReleaseNotes(classifiedCommits, github.context.repo.owner, github.context.repo.repo);
+                core.setOutput("release_notes", releaseNotes);
+            }
             if (changelogFile) {
-                const env_2 = { stack: [], error: void 0, hasError: false };
-                try {
-                    if (changelogFormat &&
-                        !["markdown", "plain"].includes(changelogFormat)) {
-                        throw new Error(`Invalid changelog format "${changelogFormat}". Must be either "markdown" or "plain".`);
-                    }
-                    const changeLogGenerator = __addDisposableResource(env_2, new ChangeLogGenerator_1.default(), true);
-                    yield changeLogGenerator.setup();
-                    yield changeLogGenerator.generateChangeLog(changelogFile, changelogFormat);
+                if (changelogFormat &&
+                    !["markdown", "plain"].includes(changelogFormat)) {
+                    throw new Error(`Invalid changelog format "${changelogFormat}". Must be either "markdown" or "plain".`);
                 }
-                catch (e_1) {
-                    env_2.error = e_1;
-                    env_2.hasError = true;
-                }
-                finally {
-                    const result_1 = __disposeResources(env_2);
-                    if (result_1)
-                        yield result_1;
-                }
+                yield changeLogGenerator.setup();
+                yield changeLogGenerator.generateChangeLog(changelogFile, changelogFormat);
             }
             if (createCommit) {
                 metadataFileJSON.lastReadCommit = github.context.payload.after;
@@ -35901,14 +35952,14 @@ function run() {
                 yield gitClient.push(...pushArgs.filter(Boolean));
             }
         }
-        catch (e_2) {
-            env_1.error = e_2;
+        catch (e_1) {
+            env_1.error = e_1;
             env_1.hasError = true;
         }
         finally {
-            const result_2 = __disposeResources(env_1);
-            if (result_2)
-                yield result_2;
+            const result_1 = __disposeResources(env_1);
+            if (result_1)
+                yield result_1;
         }
     });
 }

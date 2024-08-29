@@ -27,3 +27,4 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.automatic_versioning.outputs.tag }}
+          body: ${{ steps.automatic_versioning.outputs.release_notes }}

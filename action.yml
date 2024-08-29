@@ -82,6 +82,10 @@ inputs:
     description: "The format to use for the changelog. Can be 'markdown' or 'plain'."
     required: false
     default: "plain"
+  add-release-notes:
+    description: "Whether to add release notes to the changelog."
+    required: false
+    default: true
 runs:
   using: node20
   main: "build/index.js"
