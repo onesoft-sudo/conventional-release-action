@@ -42,7 +42,40 @@ jobs:
 
 ## Inputs
 
-Todo.
+- `allowed-commit-types` - A comma-separated list of commit types that are allowed.
+- `version-json-file` - The path to the JSON file that contains the version information.
+- `version-manager-module` - The path to a commonjs module that exports a function to manage the version.
+- `json-tab-width` - The number of spaces to use for indentation in the JSON file.
+- `create-tag` - Whether to create a tag for the new version.
+- `create-commit` - Whether to create a commit for the new version.
+- `create-tag-prefix` - The prefix to use for the tag.
+- `commit-message-format` - The format to use for the commit message.
+- `git-path` - The path to the git executable.
+- `git-user-name` - The name to use for the git user.
+- `git-user-email` - The email to use for the git user.
+- `git-gpg-key` - The GPG key (ASCII) to use for signing the commit.
+- `git-sign-off` - Whether to sign off the commit.
+- `git-push` - Whether to push the commit and tag.
+- `git-push-remote` - The remote to push the commit and tag to.
+- `git-push-remote-url` - The URL of the remote to push the commit and tag to.
+- `git-push-branch` - The branch to push the commit and tag to.
+- `metadata-file` - The path to the file that contains the metadata.
+- `changelog-file` - The path to the file where the generated changelog will be written.
+- `changelog-format` - The format to use for the changelog. Can be 'markdown' or 'plain'.
+- `add-release-notes` - Whether to add release notes to the changelog.
+
+## Outputs
+
+- `tag` - The tag for the new version.
+- `release_notes` - The release notes for the new version.
+- `version` - The new version.
+
+> [!NOTE]  
+> All of these outputs will be empty if no new version is created.
+
+## Contributors
+
+- [Ar Rakin](https://github.com/virtual-designer) [Maintainer]
 
 ## License
 
