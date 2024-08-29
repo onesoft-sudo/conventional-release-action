@@ -1,5 +1,9 @@
 29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
+        fix: do not count commits from the beginning on the very first run
+
+        chore: update readme
+
         fix: commit messages format (broken links)
 
         fix: commit messages format
@@ -21,6 +25,8 @@
         chore: update readme
 
 29-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+        release: v1.2.5 [skip ci]
 
         release: v1.2.4 [skip ci]
 
