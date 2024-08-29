@@ -1,5 +1,11 @@
 29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
+        fix: commit messages in release notes
+
+        fix: commit messages in release notes
+
+        fix: id and shortId swapped
+
         feat: release note generation
 
         fix: make changelog generation command silent
@@ -11,6 +17,8 @@
         chore: update readme
 
 29-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+        release: v1.2.0 [skip ci]
 
         release: v1.1.2 [skip ci]
 
