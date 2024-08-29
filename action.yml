@@ -77,6 +77,7 @@ inputs:
   changelog-file:
     description: "The path to the file where the generated changelog will be written."
     required: false
+    default: "ChangeLog"
   changelog-format:
     description: "The format to use for the changelog. Can be 'markdown' or 'plain'."
     required: false
