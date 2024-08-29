@@ -60,21 +60,17 @@ async function run() {
 
     await gitClient.pull(gitPushRemote, gitPushBranch ?? "HEAD");
 
-    if (!createCommit) {
-        core.info("Creating commits is disabled.");
-
-        metadataFileJSON = {
-            lastReadCommit: github.context.payload.before,
-        };
-    } else if (!existsSync(metadataFile)) {
+    if (!existsSync(metadataFile) || !createCommit) {
         if (createCommit) {
             core.info(
                 "Metadata file not found, will be created after the first run.",
             );
+        } else {
+            core.info("Creating commits is disabled.");
         }
 
         metadataFileJSON = {
-            lastReadCommit: (await gitClient.getFirstCommit()) || "",
+            lastReadCommit: github.context.payload.before,
         };
     } else {
         metadataFileJSON = JSON.parse(await readFile(metadataFile, "utf-8"));

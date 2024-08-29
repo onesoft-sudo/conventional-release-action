@@ -33,6 +33,7 @@ class GitClient implements AsyncDisposable {
     private async exec({ args, exitCodeCheck = true }: ExecOptions) {
         const code = await exec(this.gitPath, args, {
             ignoreReturnCode: !exitCodeCheck,
+            silent: true,
         });
 
         if (exitCodeCheck && code !== 0) {
@@ -43,6 +44,7 @@ class GitClient implements AsyncDisposable {
     private async execWithOutput({ args, exitCodeCheck = true }: ExecOptions) {
         const { stdout, exitCode } = await getExecOutput(this.gitPath, args, {
             ignoreReturnCode: !exitCodeCheck,
+            silent: true,
         });
 
         if (exitCodeCheck && exitCode !== 0) {
@@ -217,6 +219,7 @@ class GitClient implements AsyncDisposable {
 
         const { stdout, stderr } = await getExecOutput("gpg", ["--import"], {
             input: Buffer.from(key, "utf-8"),
+            silent: true,
         });
 
         for (const data of `${stdout}\n${stderr}`.split(/\r?\n/g)) {

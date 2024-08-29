@@ -35426,6 +35426,7 @@ class GitClient {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
             const code = yield (0, exec_1.exec)(this.gitPath, args, {
                 ignoreReturnCode: !exitCodeCheck,
+                silent: true,
             });
             if (exitCodeCheck && code !== 0) {
                 throw new Error(`Failed to execute git command.`);
@@ -35436,6 +35437,7 @@ class GitClient {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
             const { stdout, exitCode } = yield (0, exec_1.getExecOutput)(this.gitPath, args, {
                 ignoreReturnCode: !exitCodeCheck,
+                silent: true,
             });
             if (exitCodeCheck && exitCode !== 0) {
                 throw new Error(`Failed to execute git command.`);
@@ -35600,6 +35602,7 @@ class GitClient {
             let keyId;
             const { stdout, stderr } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
                 input: Buffer.from(key, "utf-8"),
+                silent: true,
             });
             for (const data of `${stdout}\n${stderr}`.split(/\r?\n/g)) {
                 const match = data.match(/^gpg: key ([0-9A-F]+):/);
@@ -35862,18 +35865,15 @@ function run() {
                 gpgKey: gitGPPKey || undefined,
             });
             yield gitClient.pull(gitPushRemote, gitPushBranch !== null && gitPushBranch !== void 0 ? gitPushBranch : "HEAD");
-            if (!createCommit) {
-                core.info("Creating commits is disabled.");
-                metadataFileJSON = {
-                    lastReadCommit: github.context.payload.before,
-                };
-            }
-            else if (!(0, fs_1.existsSync)(metadataFile)) {
+            if (!(0, fs_1.existsSync)(metadataFile) || !createCommit) {
                 if (createCommit) {
                     core.info("Metadata file not found, will be created after the first run.");
                 }
+                else {
+                    core.info("Creating commits is disabled.");
+                }
                 metadataFileJSON = {
-                    lastReadCommit: (yield gitClient.getFirstCommit()) || "",
+                    lastReadCommit: github.context.payload.before,
                 };
             }
             else {
