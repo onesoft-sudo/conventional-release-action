@@ -34,11 +34,10 @@ jobs:
 
       - name: Create Release
         uses: ncipollo/release-action@v2
-        if: ${{ steps.automatic_versioning.outputs.version != '' }}
+        if: ${{ steps.automatic_versioning.outputs.tag != '' }}
         with:
-          tag: ${{ steps.automatic_versioning.outputs.version }}
-          draft: false
-          prerelease: false
+          tag: ${{ steps.automatic_versioning.outputs.tag }}
+          body: ${{ steps.automatic_versioning.outputs.release_notes }}
 ```
 
 ## Inputs
