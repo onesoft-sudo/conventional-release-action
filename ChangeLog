@@ -1,5 +1,7 @@
 29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
+        fix: commit messages format (broken links)
+
         fix: commit messages format
 
         fix: commit messages in release notes
@@ -19,6 +21,8 @@
         chore: update readme
 
 29-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+        release: v1.2.4 [skip ci]
 
         release: v1.2.3 [skip ci]
 
