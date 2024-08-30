@@ -1,4 +1,12 @@
+30-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+        fix(versioning): only increase version components once even if there are multiple commits
+
 29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+        chore: update readme
+
+        chore: update action.yml
 
         fix: do not count commits from the beginning on the very first run
 
@@ -25,6 +33,8 @@
         chore: update readme
 
 29-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+        release: v1.2.6 [skip ci]
 
         release: v1.2.5 [skip ci]
 
