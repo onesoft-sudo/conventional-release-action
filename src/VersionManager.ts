@@ -21,6 +21,9 @@ class VersionManager {
         "refactor",
         "perf",
         "test",
+        "ci",
+        "build",
+        "revert",
     ];
 
     private commits: Commit[] = [];
@@ -66,6 +69,11 @@ class VersionManager {
             let [type] = head.split(":");
             let increased = false;
             let major = false;
+            let majorIncreased = false,
+                minorIncreased = false,
+                patchIncreased = false,
+                prereleaseIncreased = false;
+
             const forcePrerelease =
                 /\[(v\:)?(alpha|beta|rc|prerelease)\]/gi.test(commit.message);
 
@@ -90,53 +98,78 @@ class VersionManager {
             );
 
             if (major) {
-                parsed.inc(forcePrerelease ? "premajor" : "major");
+                if (!majorIncreased) {
+                    parsed.inc(forcePrerelease ? "premajor" : "major");
+                    majorIncreased = true;
+                }
+
                 classifiedCommits.breakingChanges.push({
                     ...commit,
                     prerelease: forcePrerelease,
                     type,
                 });
+
                 increased = true;
             } else {
                 if (type === "feat") {
-                    parsed.inc(forcePrerelease ? "preminor" : "minor");
+                    if (!minorIncreased && !majorIncreased) {
+                        parsed.inc(forcePrerelease ? "preminor" : "minor");
+                        minorIncreased = true;
+                    }
+
                     classifiedCommits.features.push({
                         ...commit,
                         prerelease: forcePrerelease,
                         type,
                     });
+
                     increased = true;
                 }
 
                 if (type === "fix") {
-                    parsed.inc(forcePrerelease ? "prepatch" : "patch");
+                    if (!patchIncreased && !minorIncreased && !majorIncreased) {
+                        parsed.inc(forcePrerelease ? "prepatch" : "patch");
+                        patchIncreased = true;
+                    }
+
                     classifiedCommits.fixes.push({
                         ...commit,
                         prerelease: forcePrerelease,
                         type,
                     });
+
                     increased = true;
                 }
             }
 
             if (forcePrerelease && !increased) {
-                parsed.inc("prerelease");
+                if (!prereleaseIncreased) {
+                    parsed.inc("prerelease");
+                    prereleaseIncreased = true;
+                }
+
                 classifiedCommits.others.push({
                     ...commit,
                     prerelease: true,
                     type,
                 });
+
                 increased = true;
             }
 
             if (versionSuffix) {
                 if (!increased) {
-                    parsed.inc("prerelease");
+                    if (!prereleaseIncreased) {
+                        parsed.inc("prerelease");
+                        prereleaseIncreased = true;
+                    }
+
                     classifiedCommits.others.push({
                         ...commit,
                         prerelease: true,
                         type,
                     });
+
                     increased = true;
                 }
 
@@ -145,12 +178,17 @@ class VersionManager {
 
             if (buildMetadata) {
                 if (!increased) {
-                    parsed.inc("prerelease");
+                    if (!prereleaseIncreased) {
+                        parsed.inc("prerelease");
+                        prereleaseIncreased = true;
+                    }
+
                     classifiedCommits.others.push({
                         ...commit,
                         prerelease: true,
                         type,
                     });
+
                     increased = true;
                 }
 
