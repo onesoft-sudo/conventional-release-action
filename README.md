@@ -64,6 +64,9 @@ jobs:
 - `changelog-format` - The format to use for the changelog. Can be 'markdown' or 'plain'.
 - `add-release-notes` - Whether to add release notes to the changelog.
 
+> [!NOTE]
+> All inputs are optional.
+
 ## Outputs
 
 - `tag` - The tag for the new version.
