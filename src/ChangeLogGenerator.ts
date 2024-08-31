@@ -69,7 +69,7 @@ class ChangeLogGenerator implements AsyncDisposable {
                     newLinePosition === -1
                         ? commit.message
                         : commit.message.slice(0, newLinePosition);
-                const typeWithSubject = head.match(/^([A-Za-z0-9-_](.*?))\!?:/);
+                const typeWithSubject = head.match(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/);
 
                 if (!typeWithSubject) {
                     continue;
@@ -80,7 +80,7 @@ class ChangeLogGenerator implements AsyncDisposable {
                     headerAdded = true;
                 }
 
-                notes += `* [[\`${commit.shortId}\`](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[1]}**: ${head.replace(/^([A-Za-z0-9-_](.*?))\!?:/, "").trim()}\n`;
+                notes += `* [[\`${commit.shortId}\`](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[0]}**: ${head.replace(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/, "").trim()}\n`;
             }
 
             if (headerAdded) {
