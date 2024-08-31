@@ -24,15 +24,15 @@ inputs:
   json-tab-width:
     description: "The number of spaces to use for indentation in the JSON file."
     required: false
-    default: 4
+    default: "4"
   create-tag:
     description: "Whether to create a tag for the new version."
     required: false
-    default: true
+    default: "true"
   create-commit:
     description: "Whether to create a commit for the new version."
     required: false
-    default: true
+    default: "true"
   create-tag-prefix:
     description: "The prefix to use for the tag."
     required: false
@@ -59,11 +59,11 @@ inputs:
   git-sign-off:
     description: "Whether to sign off the commit."
     required: false
-    default: false
+    default: "false"
   git-push:
     description: "Whether to push the commit and tag."
     required: false
-    default: true
+    default: "true"
   git-push-remote:
     description: "The remote to push the commit and tag to."
     required: false
@@ -89,11 +89,15 @@ inputs:
   add-release-notes:
     description: "Whether to add release notes to the changelog."
     required: false
-    default: true
+    default: "true"
   skip-commits-pattern:
-    description: "A regex pattern for the commits which should not be listed in changelog or release notes"
-    requried: false
-    default: "^release(\(.+?\))?\!?:"
+    description: "A regex pattern for the commits which should not be listed in the release notes"
+    required: false
+    default: "^release(\\(.+?\\))?\\!?:"
+  skip-commits-pattern-flags:
+    description: "Flags for the regex pattern in skip-commits-pattern"
+    required: false
+    default: "gi"
 runs:
   using: node20
   main: "build/index.js"

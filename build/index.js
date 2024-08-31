@@ -35348,7 +35348,7 @@ class ChangeLogGenerator {
             yield (0, promises_1.writeFile)(file, stdout);
         });
     }
-    createReleaseNotes(classifiedCommits, githubUsername, githubRepo) {
+    createReleaseNotes(classifiedCommits, githubUsername, githubRepo, skipCommitsRegex) {
         return __awaiter(this, void 0, void 0, function* () {
             let notes = "";
             for (const key in classifiedCommits) {
@@ -35358,11 +35358,14 @@ class ChangeLogGenerator {
                 }
                 let headerAdded = false;
                 for (const commit of commits) {
+                    if (skipCommitsRegex && skipCommitsRegex.test(commit.message)) {
+                        continue;
+                    }
                     const newLinePosition = commit.message.indexOf("\n");
                     const head = newLinePosition === -1
                         ? commit.message
                         : commit.message.slice(0, newLinePosition);
-                    const typeWithSubject = head.match(/^([A-Za-z0-9-_](.*?))\!?:/);
+                    const typeWithSubject = head.match(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/);
                     if (!typeWithSubject) {
                         continue;
                     }
@@ -35370,7 +35373,7 @@ class ChangeLogGenerator {
                         notes += `### ${ChangeLogGenerator.COMMIT_CLASSIFICATION[key]}\n`;
                         headerAdded = true;
                     }
-                    notes += `* [[\`${commit.shortId}\`](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[1]}**: ${head.replace(/^([A-Za-z0-9-_](.*?))\!?:/, "").trim()}\n`;
+                    notes += `* [[\`${commit.shortId}\`](https://github.com/${githubUsername}/${githubRepo}/commit/${commit.id})] **${typeWithSubject[0]}**: ${head.replace(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/, "").trim()}\n`;
                 }
                 if (headerAdded) {
                     notes += "\n";
@@ -35876,6 +35879,10 @@ function run() {
             const changelogFile = core.getInput("changelog-file") || undefined;
             const changelogFormat = core.getInput("changelog-format") || "plain";
             const addReleaseNotes = core.getInput("add-release-notes") === "true";
+            const skipCommitsPattern = core.getInput("skip-commits-pattern");
+            const skipCommitsRegex = skipCommitsPattern
+                ? new RegExp(skipCommitsPattern, core.getInput("skip-commits-pattern-flags") || "gi")
+                : undefined;
             core.info(`Metadata file: ${metadataFile}`);
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
@@ -35941,7 +35948,7 @@ function run() {
             yield updateVersion(versionManager, updatedVersion);
             core.setOutput("version", updatedVersion);
             if (addReleaseNotes) {
-                const releaseNotes = yield changeLogGenerator.createReleaseNotes(classifiedCommits, github.context.repo.owner, github.context.repo.repo);
+                const releaseNotes = yield changeLogGenerator.createReleaseNotes(classifiedCommits, github.context.repo.owner, github.context.repo.repo, skipCommitsRegex);
                 core.setOutput("release_notes", releaseNotes);
             }
             if (changelogFile) {

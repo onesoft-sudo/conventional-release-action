@@ -41,6 +41,13 @@ async function run() {
     const changelogFile = core.getInput("changelog-file") || undefined;
     const changelogFormat = core.getInput("changelog-format") || "plain";
     const addReleaseNotes = core.getInput("add-release-notes") === "true";
+    const skipCommitsPattern = core.getInput("skip-commits-pattern");
+    const skipCommitsRegex = skipCommitsPattern
+        ? new RegExp(
+              skipCommitsPattern,
+              core.getInput("skip-commits-pattern-flags") || "gi",
+          )
+        : undefined;
 
     core.info(`Metadata file: ${metadataFile}`);
 
@@ -154,6 +161,7 @@ async function run() {
             classifiedCommits,
             github.context.repo.owner,
             github.context.repo.repo,
+            skipCommitsRegex,
         );
 
         core.setOutput("release_notes", releaseNotes);

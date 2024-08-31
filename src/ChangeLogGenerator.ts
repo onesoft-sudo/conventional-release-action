@@ -51,6 +51,7 @@ class ChangeLogGenerator implements AsyncDisposable {
         classifiedCommits: ClassifiedCommits,
         githubUsername: string,
         githubRepo: string,
+        skipCommitsRegex?: RegExp,
     ) {
         let notes = "";
 
@@ -64,12 +65,18 @@ class ChangeLogGenerator implements AsyncDisposable {
             let headerAdded = false;
 
             for (const commit of commits) {
+                if (skipCommitsRegex && skipCommitsRegex.test(commit.message)) {
+                    continue;
+                }
+
                 const newLinePosition = commit.message.indexOf("\n");
                 const head =
                     newLinePosition === -1
                         ? commit.message
                         : commit.message.slice(0, newLinePosition);
-                const typeWithSubject = head.match(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/);
+                const typeWithSubject = head.match(
+                    /([A-Za-z0-9-_]+(\(.+?\))?)\!?:/,
+                );
 
                 if (!typeWithSubject) {
                     continue;
