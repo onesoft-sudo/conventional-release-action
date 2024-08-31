@@ -1,5 +1,10 @@
 31-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
+     [*] fix: multiple colons inserted in release notes
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
      [*] feat: add `skip-commits-pattern` option
          
          Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
@@ -10,6 +15,9 @@
          Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
 
 31-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.3.0 [skip ci]
+         
 
      [*] release: v1.2.8 [skip ci]
          
