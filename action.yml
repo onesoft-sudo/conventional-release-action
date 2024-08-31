@@ -90,6 +90,10 @@ inputs:
     description: "Whether to add release notes to the changelog."
     required: false
     default: true
+  skip-commits-pattern:
+    description: "A regex pattern for the commits which should not be listed in changelog or release notes"
+    requried: false
+    default: "^release(\(.+?\))?\!?:"
 runs:
   using: node20
   main: "build/index.js"
