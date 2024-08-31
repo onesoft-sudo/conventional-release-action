@@ -1,3 +1,19 @@
+31-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] feat: add `skip-commits-pattern` option
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+     [*] chore: update action.yml
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+31-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.2.8 [skip ci]
+         
+
 31-08-2024  Ar Rakin <68149013+virtual-designer@users.noreply.github.com>
 
      [*] fix(services:ChangeLogGenerator): release notes generation contains broken markdown
