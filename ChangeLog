@@ -1,216 +1,454 @@
+31-08-2024  Ar Rakin <68149013+virtual-designer@users.noreply.github.com>
+
+     [*] fix(services:ChangeLogGenerator): release notes generation contains broken markdown
+         
+         Signed-off-by: GitHub <noreply@github.com>
+         
+
 30-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
-        fix(versioning): only increase version components once even if there are multiple commits
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] fix(versioning): only increase version components once even if there are multiple commits
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+30-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.2.7 [skip ci]
+         
 
 29-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
-        chore: update readme
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update action.yml
+     [*] chore: update action.yml
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: do not count commits from the beginning on the very first run
+     [*] fix: do not count commits from the beginning on the very first run
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update readme
+     [*] chore: update readme
+         
 
-        fix: commit messages format (broken links)
+     [*] fix: commit messages format (broken links)
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: commit messages format
+     [*] fix: commit messages format
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: commit messages in release notes
+     [*] fix: commit messages in release notes
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: commit messages in release notes
+     [*] fix: commit messages in release notes
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: id and shortId swapped
+     [*] fix: id and shortId swapped
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: release note generation
+     [*] feat: release note generation
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: make changelog generation command silent
+     [*] fix: make changelog generation command silent
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: correct action.yml inputs
+     [*] fix: correct action.yml inputs
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: changelog generation using OSN commons
+     [*] feat: changelog generation using OSN commons
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update readme
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
 29-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
 
-        release: v1.2.6 [skip ci]
+     [*] release: v1.2.6 [skip ci]
+         
 
-        release: v1.2.5 [skip ci]
+     [*] release: v1.2.5 [skip ci]
+         
 
-        release: v1.2.4 [skip ci]
+     [*] release: v1.2.4 [skip ci]
+         
 
-        release: v1.2.3 [skip ci]
+     [*] release: v1.2.3 [skip ci]
+         
 
-        release: v1.2.0 [skip ci]
+     [*] release: v1.2.0 [skip ci]
+         
 
-        release: v1.1.2 [skip ci]
+     [*] release: v1.1.2 [skip ci]
+         
 
-        release: v1.1.1 [skip ci]
+     [*] release: v1.1.1 [skip ci]
+         
 
-        release: v1.1.0 [skip ci]
+     [*] release: v1.1.0 [skip ci]
+         
 
 28-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
-        chore: update readme
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update .prettierrc
+     [*] chore: update .prettierrc
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update readme
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update action.yml
+     [*] chore: update action.yml
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update action.yml
+     [*] chore: update action.yml
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: update package.json
+     [*] chore: update package.json
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: update version number
+     [*] fix: update version number
+         
 
-        fix: a test fix commit
+     [*] fix: a test fix commit
+         
 
-        ci: add release workflow
+     [*] ci: add release workflow
+         
 
-        ci: add release workflow
+     [*] ci: add release workflow
+         
 
-        ci: add release workflow
+     [*] ci: add release workflow
+         
 
-        refactor: remove unneeded console.log() calls
+     [*] refactor: remove unneeded console.log() calls
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: another fix
+     [*] fix: another fix
+         
 
-        fix: another fix
-        Version-suffix: -foo4
+     [*] fix: another fix
+         
+         Version-suffix: -foo4
+         
 
-        fix: not updating metadata file
+     [*] fix: not updating metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: just a fix
+     [*] fix: just a fix
+         
 
-        fix: not updating metadata file
+     [*] fix: not updating metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: a fix
+     [*] fix: a fix
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: store metadata file
+     [*] feat: store metadata file
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        style: remove debug logs
+     [*] style: remove debug logs
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: gpg errors
+     [*] fix: gpg errors
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: gpg errors
+     [*] fix: gpg errors
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: gpg errors
+     [*] fix: gpg errors
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: gpg key import errors
+     [*] fix: gpg key import errors
+         
 
-        fix: gpg key import errors
+     [*] fix: gpg key import errors
+         
 
-        feat: new feature [test]
+     [*] feat: new feature [test]
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        ci: update build workflow
+     [*] ci: update build workflow
+         
 
-        fix: exit code check
+     [*] fix: exit code check
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: use @actions/exec
+     [*] fix: use @actions/exec
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: git failure
+     [*] fix: git failure
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: rebuild
+     [*] fix: rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: rebuild
+     [*] fix: rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: rebuild
+     [*] fix: rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: git operations
+     [*] feat: git operations
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        ci: update workflows
+     [*] ci: update workflows
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        chore: add .vscode
+     [*] chore: add .vscode
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
 28-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
 
-        release: v1.0.1 [skip ci]
+     [*] release: v1.0.1 [skip ci]
+         
 
-        release: v24.1.3 [skip ci]
+     [*] release: v24.1.3 [skip ci]
+         
 
-        release: v24.1.2 [skip ci]
+     [*] release: v24.1.2 [skip ci]
+         
 
-        release: v24.1.2-foo4 [skip ci]
+     [*] release: v24.1.2-foo4 [skip ci]
+         
 
-        release: v24.1.1 [skip ci]
+     [*] release: v24.1.1 [skip ci]
+         
 
-        release: v24.1.0 [skip ci]
+     [*] release: v24.1.0 [skip ci]
+         
 
-        release: v24.1.0foo0 [skip ci]
+     [*] release: v24.1.0foo0 [skip ci]
+         
 
-        release: v23.1.0foo0 [skip ci]
+     [*] release: v23.1.0foo0 [skip ci]
+         
 
-        release: v22.1.0foo0 [skip ci]
+     [*] release: v22.1.0foo0 [skip ci]
+         
 
-        release: v21.0.7 [skip ci]
+     [*] release: v21.0.7 [skip ci]
+         
 
-        release: v21.0.6 [skip ci]
+     [*] release: v21.0.6 [skip ci]
+         
 
-        release: v21.0.5 [skip ci]
+     [*] release: v21.0.5 [skip ci]
+         
 
-        release: v21.0.4 [skip ci]
+     [*] release: v21.0.4 [skip ci]
+         
 
 28-08-2024  Conventional Release Action <conventional-releases@onesoftnet.eu.org>
 
-        release: v21.0.2 [skip ci]
+     [*] release: v21.0.2 [skip ci]
+         
 
-        release: v21.0.1 [skip ci]
+     [*] release: v21.0.1 [skip ci]
+         
 
 27-08-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
-        chore: create LICENSE
+     [*] chore: create LICENSE
+         
 
-        fix: do not reverse commit list
+     [*] fix: do not reverse commit list
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: add git client class
+     [*] feat: add git client class
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        refactor: remove unused imports
+     [*] refactor: remove unused imports
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: invalid revision range
+     [*] fix: invalid revision range
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: invalid revision range
+     [*] fix: invalid revision range
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: invalid revision range
+     [*] fix: invalid revision range
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: invalid revision range
+     [*] fix: invalid revision range
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        fix: invalid revision range
+     [*] fix: invalid revision range
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: finalize version bumping
+     [*] feat: finalize version bumping
+         
 
-        feat\!: a 2breaking change
-        Version-suffix: foo0
+     [*] feat\!: a 2breaking change
+         
+         Version-suffix: foo0
+         
 
-        feat!: breaking change
-        Version-Suffix: foo0
+     [*] feat!: breaking change
+         
+         Version-Suffix: foo0
+         
 
-        chore: rebuild
+     [*] chore: rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: add ncc build files
+     [*] feat: add ncc build files
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
 
-        feat: initial commit
+     [*] feat: initial commit
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
