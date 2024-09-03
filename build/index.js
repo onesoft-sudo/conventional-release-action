@@ -35743,6 +35743,18 @@ class VersionManager {
                     classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                     increased = true;
                 }
+                const date = new Date();
+                const numdate = `${date.getFullYear()}${date.getMonth().toString().padStart(2, "0")}${date
+                    .getDate()
+                    .toString()
+                    .padStart(2, "0")}${date
+                    .getHours()
+                    .toString()
+                    .padStart(2, "0")}${date.getMinutes().toString().padStart(2, "0")}${date
+                    .getSeconds()
+                    .toString()
+                    .padStart(2, "0")}`;
+                const unixtime = Math.floor(date.getTime() / 1000).toString();
                 if (versionSuffix) {
                     if (!increased) {
                         if (!prereleaseIncreased) {
@@ -35752,7 +35764,12 @@ class VersionManager {
                         classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                         increased = true;
                     }
-                    suffix = versionSuffix[1].split(".");
+                    suffix = versionSuffix[1]
+                        .replaceAll("{id}", this.commits[0].shortId)
+                        .replaceAll("{sha}", this.commits[0].id)
+                        .replaceAll("{numdate}", numdate)
+                        .replaceAll("{unixtime}", unixtime)
+                        .split(".");
                 }
                 if (buildMetadata) {
                     if (!increased) {
@@ -35763,7 +35780,13 @@ class VersionManager {
                         classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: true, type }));
                         increased = true;
                     }
-                    build = buildMetadata[1].split(".");
+                    const format = buildMetadata[1];
+                    build = format
+                        .replaceAll("{id}", this.commits[0].shortId)
+                        .replaceAll("{sha}", this.commits[0].id)
+                        .replaceAll("{numdate}", numdate)
+                        .replaceAll("{unixtime}", unixtime)
+                        .split(".");
                 }
                 if (!increased) {
                     classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: false, type }));
