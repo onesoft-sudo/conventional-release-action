@@ -1,8 +1,18 @@
 03-09-2024  Ar Rakin <68149013+virtual-designer@users.noreply.github.com>
 
+     [*] fix: rebuild
+         
+         Signed-off-by: GitHub <noreply@github.com>
+         
+
      [*] feat: format strings in Build-metadata and Version-prefix commit footers
          
          Signed-off-by: GitHub <noreply@github.com>
+         
+
+03-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.4.0 [skip ci]
          
 
 31-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
