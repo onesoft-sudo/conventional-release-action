@@ -1,11 +1,19 @@
 03-09-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
+     [*] fix: rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
      [*] fix: preserve build metadata if no new versions are released
          
          Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
          
 
 03-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.4.2 [skip ci]
+         
 
      [*] release: v1.4.1 [skip ci]
          
