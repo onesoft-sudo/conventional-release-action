@@ -1,3 +1,18 @@
+03-09-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] fix: preserve build metadata if no new versions are released
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+03-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.4.1 [skip ci]
+         
+
+     [*] release: v1.4.0 [skip ci]
+         
+
 03-09-2024  Ar Rakin <68149013+virtual-designer@users.noreply.github.com>
 
      [*] fix: rebuild
@@ -8,11 +23,6 @@
      [*] feat: format strings in Build-metadata and Version-prefix commit footers
          
          Signed-off-by: GitHub <noreply@github.com>
-         
-
-03-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
-
-     [*] release: v1.4.0 [skip ci]
          
 
 31-08-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
