@@ -35679,6 +35679,7 @@ class VersionManager {
             if (!parsed) {
                 throw new Error(`Failed to parse version "${lastVersion}".`);
             }
+            const previousBuild = parsed.build;
             parsed.build = [];
             const classifiedCommits = {
                 features: [],
@@ -35686,6 +35687,7 @@ class VersionManager {
                 others: [],
                 breakingChanges: [],
             };
+            let increased = false;
             for (const commit of this.commits) {
                 const newlineIndex = commit.message.indexOf("\n");
                 const head = commit.message.slice(0, newlineIndex === -1 ? undefined : newlineIndex);
@@ -35693,7 +35695,6 @@ class VersionManager {
                     ? ""
                     : commit.message.slice(newlineIndex + 1);
                 let [type] = head.split(":");
-                let increased = false;
                 let major = false;
                 let majorIncreased = false, minorIncreased = false, patchIncreased = false, prereleaseIncreased = false;
                 const forcePrerelease = /\[(v\:)?(alpha|beta|rc|prerelease)\]/gi.test(commit.message);
@@ -35791,6 +35792,9 @@ class VersionManager {
                 if (!increased) {
                     classifiedCommits.others.push(Object.assign(Object.assign({}, commit), { prerelease: false, type }));
                 }
+            }
+            if (!increased) {
+                build = [...previousBuild];
             }
             const updatedVersion = parsed.toString() +
                 ((suffix === null || suffix === void 0 ? void 0 : suffix.length) ? `${suffix.join(".")}` : "") +
