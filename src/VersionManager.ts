@@ -47,6 +47,7 @@ class VersionManager {
             throw new Error(`Failed to parse version "${lastVersion}".`);
         }
 
+        const previousBuild = parsed.build;
         parsed.build = [];
 
         const classifiedCommits: ClassifiedCommits = {
@@ -55,6 +56,8 @@ class VersionManager {
             others: [],
             breakingChanges: [],
         };
+
+        let increased = false;
 
         for (const commit of this.commits) {
             const newlineIndex = commit.message.indexOf("\n");
@@ -67,7 +70,6 @@ class VersionManager {
                     ? ""
                     : commit.message.slice(newlineIndex + 1);
             let [type] = head.split(":");
-            let increased = false;
             let major = false;
             let majorIncreased = false,
                 minorIncreased = false,
@@ -230,6 +232,10 @@ class VersionManager {
                     type,
                 });
             }
+        }
+
+        if (!increased) {
+            build = [...previousBuild];
         }
 
         const updatedVersion =
