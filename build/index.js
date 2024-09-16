@@ -35342,9 +35342,11 @@ class ChangeLogGenerator {
     }
     generateChangeLog(file_1) {
         return __awaiter(this, arguments, void 0, function* (file, format = "plain") {
-            const { stdout } = yield (0, exec_1.getExecOutput)(process.argv0, ["/tmp/genchangelog", "-f", format], {
-                silent: true,
-            });
+            const { stdout } = yield (0, exec_1.getExecOutput)(process.argv0, [
+                "/tmp/genchangelog",
+                "-f",
+                format,
+            ]);
             yield (0, promises_1.writeFile)(file, stdout);
         });
     }
@@ -35429,7 +35431,6 @@ class GitClient {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
             const code = yield (0, exec_1.exec)(this.gitPath, args, {
                 ignoreReturnCode: !exitCodeCheck,
-                silent: true,
             });
             if (exitCodeCheck && code !== 0) {
                 throw new Error(`Failed to execute git command.`);
@@ -35440,7 +35441,6 @@ class GitClient {
         return __awaiter(this, arguments, void 0, function* ({ args, exitCodeCheck = true }) {
             const { stdout, exitCode } = yield (0, exec_1.getExecOutput)(this.gitPath, args, {
                 ignoreReturnCode: !exitCodeCheck,
-                silent: true,
             });
             if (exitCodeCheck && exitCode !== 0) {
                 throw new Error(`Failed to execute git command.`);
@@ -35605,7 +35605,6 @@ class GitClient {
             let keyId;
             const { stdout, stderr } = yield (0, exec_1.getExecOutput)("gpg", ["--import"], {
                 input: Buffer.from(key, "utf-8"),
-                silent: true,
             });
             for (const data of `${stdout}\n${stderr}`.split(/\r?\n/g)) {
                 const match = data.match(/^gpg: key ([0-9A-F]+):/);

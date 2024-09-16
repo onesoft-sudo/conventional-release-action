@@ -36,13 +36,11 @@ class ChangeLogGenerator implements AsyncDisposable {
         file: string,
         format: "markdown" | "plain" = "plain",
     ) {
-        const { stdout } = await getExecOutput(
-            process.argv0,
-            ["/tmp/genchangelog", "-f", format],
-            {
-                silent: true,
-            },
-        );
+        const { stdout } = await getExecOutput(process.argv0, [
+            "/tmp/genchangelog",
+            "-f",
+            format,
+        ]);
 
         await writeFile(file, stdout);
     }
