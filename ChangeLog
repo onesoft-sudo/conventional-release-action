@@ -1,3 +1,14 @@
+03-10-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] fix(changelog): commit types aren't being parsed correctly
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+16-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.4.4 [skip ci]
+         
+
 16-09-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
      [*] fix: do not use silent commands

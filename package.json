@@ -1,7 +1,7 @@
 {
     "name": "conventional-release-action",
     "module": "src/index.ts",
-    "version": "1.4.4",
+    "version": "1.4.5",
     "scripts": {
         "build": "ncc build src/index.ts -o build"
     },
