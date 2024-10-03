@@ -35367,7 +35367,7 @@ class ChangeLogGenerator {
                     const head = newLinePosition === -1
                         ? commit.message
                         : commit.message.slice(0, newLinePosition);
-                    const typeWithSubject = head.match(/([A-Za-z0-9-_]+(\(.+?\))?)\!?:/);
+                    const typeWithSubject = head.trim().match(/^([A-Za-z0-9-_]+(\(.+?\))?)\!?:/);
                     if (!typeWithSubject) {
                         continue;
                     }
