@@ -30,7 +30,7 @@ jobs:
 
       - name: Conventional Release Action
         id: automatic_versioning
-        uses: onesoft-sudo/conventional-release-action@v1
+        uses: onesoft-sudo/conventional-release-action@latest
 
       - name: Create Release
         uses: ncipollo/release-action@v2
