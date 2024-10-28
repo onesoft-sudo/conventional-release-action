@@ -16,7 +16,7 @@ inputs:
     description: "A comma-separated list of commit types that are allowed."
     required: false
   version-json-file:
-    description: "The path to the JSON file that contains the version information."
+    description: "The path to one or more JSON file(s) that contains the version information."
     required: false
   version-manager-module:
     description: "The path to a commonjs module that exports a function to manage the version."
