@@ -35879,16 +35879,15 @@ const GitClient_1 = __nccwpck_require__(9367);
 const VersionManager_1 = __nccwpck_require__(1526);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {
             const allowedCommitTypes = core
                 .getInput("allowed-commit-types")
                 .split(",")
                 .filter(Boolean);
-            const versionJsonFiles = ((_a = core.getInput("version-json-file")) === null || _a === void 0 ? void 0 : _a.split(",")) || [
-                "package.json",
-            ];
+            const versionJsonFiles = ((_b = (_a = core
+                .getInput("version-json-file")) === null || _a === void 0 ? void 0 : _a.split(",")) === null || _b === void 0 ? void 0 : _b.filter((s) => s !== "")) || ["package.json"];
             const versionManagerModulePath = core.getInput("version-manager-module");
             const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
             const createTag = core.getInput("create-tag") === "true";
@@ -35915,6 +35914,7 @@ function run() {
             if (versionJsonFiles.length === 0) {
                 throw new Error("No version file specified.");
             }
+            core.info(`Version files: ${versionJsonFiles.join(", ")}`);
             core.info(`Metadata file: ${metadataFile}`);
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
@@ -35956,7 +35956,7 @@ function run() {
             const versionManagerModule = versionManagerModulePath
                 ? yield Promise.resolve(`${versionManagerModulePath}`).then(s => require(s))
                 : null;
-            const getLastVersion = (_b = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.resolver) !== null && _b !== void 0 ? _b : (() => __awaiter(this, void 0, void 0, function* () {
+            const getLastVersion = (_c = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.resolver) !== null && _c !== void 0 ? _c : (() => __awaiter(this, void 0, void 0, function* () {
                 let version = null;
                 for (const versionJsonFile of versionJsonFiles) {
                     const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
@@ -35972,7 +35972,7 @@ function run() {
                 }
                 return version;
             }));
-            const updateVersion = (_c = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.updater) !== null && _c !== void 0 ? _c : ((_versionManager, version) => __awaiter(this, void 0, void 0, function* () {
+            const updateVersion = (_d = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.updater) !== null && _d !== void 0 ? _d : ((_versionManager, version) => __awaiter(this, void 0, void 0, function* () {
                 for (const versionJsonFile of versionJsonFiles) {
                     const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
                     packageJson.version = version;

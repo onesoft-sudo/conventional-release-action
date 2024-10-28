@@ -20,9 +20,10 @@ async function run() {
         .getInput("allowed-commit-types")
         .split(",")
         .filter(Boolean);
-    const versionJsonFiles = core.getInput("version-json-file")?.split(",") || [
-        "package.json",
-    ];
+    const versionJsonFiles = core
+        .getInput("version-json-file")
+        ?.split(",")
+        ?.filter((s) => s !== "") || ["package.json"];
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
     const createTag = core.getInput("create-tag") === "true";
@@ -55,6 +56,7 @@ async function run() {
         throw new Error("No version file specified.");
     }
 
+    core.info(`Version files: ${versionJsonFiles.join(", ")}`);
     core.info(`Metadata file: ${metadataFile}`);
 
     let metadataFileJSON: {
