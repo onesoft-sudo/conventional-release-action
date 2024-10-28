@@ -1,3 +1,38 @@
+28-10-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] fix: handle version files correctly
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+     [*] fix: config parse error
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+     [*] feat: multiple version files
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+     [*] chore: update action.yml
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+05-10-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+03-10-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.4.6 [skip ci]
+         
+
+     [*] release: v1.4.5 [skip ci]
+         
+
 03-10-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
      [*] fix: rebuild
@@ -8,11 +43,6 @@
      [*] fix(changelog): commit types aren't being parsed correctly
          
          Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
-
-03-10-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
-
-     [*] release: v1.4.5 [skip ci]
-         
 
 16-09-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
 
