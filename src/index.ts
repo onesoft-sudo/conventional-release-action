@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as github from "@actions/github";
 import { existsSync } from "fs";
 import { readFile, writeFile } from "fs/promises";
+import * as semver from "semver";
 import ChangeLogGenerator from "./ChangeLogGenerator";
 import GitClient from "./GitClient";
 import VersionManager from "./VersionManager";
@@ -19,8 +20,9 @@ async function run() {
         .getInput("allowed-commit-types")
         .split(",")
         .filter(Boolean);
-    const versionJsonFile =
-        core.getInput("version-json-file") || "package.json";
+    const versionJsonFiles = core.getInput("version-json-file")?.split(",") || [
+        "package.json",
+    ];
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
     const createTag = core.getInput("create-tag") === "true";
@@ -48,6 +50,10 @@ async function run() {
               core.getInput("skip-commits-pattern-flags") || "gi",
           )
         : undefined;
+
+    if (versionJsonFiles.length === 0) {
+        throw new Error("No version file specified.");
+    }
 
     core.info(`Metadata file: ${metadataFile}`);
 
@@ -112,32 +118,46 @@ async function run() {
     const getLastVersion =
         versionManagerModule?.resolver ??
         (async () => {
-            const packageJson = JSON.parse(
-                await readFile(versionJsonFile, "utf-8"),
-            );
+            let version: string | null = null;
 
-            if (!packageJson.version) {
-                throw new Error(
-                    `Version file "${versionJsonFile}" does not contain a version field.`,
+            for (const versionJsonFile of versionJsonFiles) {
+                const packageJson = JSON.parse(
+                    await readFile(versionJsonFile, "utf-8"),
                 );
+
+                if (!packageJson.version) {
+                    throw new Error(
+                        `Version file "${versionJsonFile}" does not contain a version field.`,
+                    );
+                }
+
+                if (!version || semver.gt(packageJson.version, version)) {
+                    version = packageJson.version;
+                }
             }
 
-            return packageJson.version as string;
+            if (!version) {
+                throw new Error("No version found in version files.");
+            }
+
+            return version;
         });
 
     const updateVersion =
         versionManagerModule?.updater ??
         (async (_versionManager, version) => {
-            const packageJson = JSON.parse(
-                await readFile(versionJsonFile, "utf-8"),
-            );
+            for (const versionJsonFile of versionJsonFiles) {
+                const packageJson = JSON.parse(
+                    await readFile(versionJsonFile, "utf-8"),
+                );
 
-            packageJson.version = version;
+                packageJson.version = version;
 
-            await writeFile(
-                versionJsonFile,
-                JSON.stringify(packageJson, null, jsonTabWidth) + "\n",
-            );
+                await writeFile(
+                    versionJsonFile,
+                    JSON.stringify(packageJson, null, jsonTabWidth) + "\n",
+                );
+            }
         });
 
     const currentVersion = await getLastVersion(versionManager);
@@ -197,7 +217,7 @@ async function run() {
         }
 
         await gitClient.add(metadataFile);
-        await gitClient.add(versionJsonFile);
+        await gitClient.add(...versionJsonFiles);
         await gitClient.commit(
             commitMessageFormat.replaceAll("%s", updatedVersion),
             gitSignOff,

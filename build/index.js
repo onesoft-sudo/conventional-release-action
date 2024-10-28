@@ -35873,19 +35873,22 @@ const core = __nccwpck_require__(2186);
 const github = __nccwpck_require__(5438);
 const fs_1 = __nccwpck_require__(7147);
 const promises_1 = __nccwpck_require__(3292);
+const semver = __nccwpck_require__(1383);
 const ChangeLogGenerator_1 = __nccwpck_require__(7799);
 const GitClient_1 = __nccwpck_require__(9367);
 const VersionManager_1 = __nccwpck_require__(1526);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
+        var _a, _b, _c;
         const env_1 = { stack: [], error: void 0, hasError: false };
         try {
             const allowedCommitTypes = core
                 .getInput("allowed-commit-types")
                 .split(",")
                 .filter(Boolean);
-            const versionJsonFile = core.getInput("version-json-file") || "package.json";
+            const versionJsonFiles = ((_a = core.getInput("version-json-file")) === null || _a === void 0 ? void 0 : _a.split(",")) || [
+                "package.json",
+            ];
             const versionManagerModulePath = core.getInput("version-manager-module");
             const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
             const createTag = core.getInput("create-tag") === "true";
@@ -35909,6 +35912,9 @@ function run() {
             const skipCommitsRegex = skipCommitsPattern
                 ? new RegExp(skipCommitsPattern, core.getInput("skip-commits-pattern-flags") || "gi")
                 : undefined;
+            if (versionJsonFiles.length === 0) {
+                throw new Error("No version file specified.");
+            }
             core.info(`Metadata file: ${metadataFile}`);
             let metadataFileJSON;
             const gitClient = __addDisposableResource(env_1, new GitClient_1.default(gitPath), true);
@@ -35950,17 +35956,28 @@ function run() {
             const versionManagerModule = versionManagerModulePath
                 ? yield Promise.resolve(`${versionManagerModulePath}`).then(s => require(s))
                 : null;
-            const getLastVersion = (_a = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.resolver) !== null && _a !== void 0 ? _a : (() => __awaiter(this, void 0, void 0, function* () {
-                const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
-                if (!packageJson.version) {
-                    throw new Error(`Version file "${versionJsonFile}" does not contain a version field.`);
+            const getLastVersion = (_b = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.resolver) !== null && _b !== void 0 ? _b : (() => __awaiter(this, void 0, void 0, function* () {
+                let version = null;
+                for (const versionJsonFile of versionJsonFiles) {
+                    const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
+                    if (!packageJson.version) {
+                        throw new Error(`Version file "${versionJsonFile}" does not contain a version field.`);
+                    }
+                    if (!version || semver.gt(packageJson.version, version)) {
+                        version = packageJson.version;
+                    }
                 }
-                return packageJson.version;
+                if (!version) {
+                    throw new Error("No version found in version files.");
+                }
+                return version;
             }));
-            const updateVersion = (_b = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.updater) !== null && _b !== void 0 ? _b : ((_versionManager, version) => __awaiter(this, void 0, void 0, function* () {
-                const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
-                packageJson.version = version;
-                yield (0, promises_1.writeFile)(versionJsonFile, JSON.stringify(packageJson, null, jsonTabWidth) + "\n");
+            const updateVersion = (_c = versionManagerModule === null || versionManagerModule === void 0 ? void 0 : versionManagerModule.updater) !== null && _c !== void 0 ? _c : ((_versionManager, version) => __awaiter(this, void 0, void 0, function* () {
+                for (const versionJsonFile of versionJsonFiles) {
+                    const packageJson = JSON.parse(yield (0, promises_1.readFile)(versionJsonFile, "utf-8"));
+                    packageJson.version = version;
+                    yield (0, promises_1.writeFile)(versionJsonFile, JSON.stringify(packageJson, null, jsonTabWidth) + "\n");
+                }
             }));
             const currentVersion = yield getLastVersion(versionManager);
             core.info(`Current version: ${currentVersion}`);
@@ -35992,7 +36009,7 @@ function run() {
                     yield gitClient.add(changelogFile);
                 }
                 yield gitClient.add(metadataFile);
-                yield gitClient.add(versionJsonFile);
+                yield gitClient.add(...versionJsonFiles);
                 yield gitClient.commit(commitMessageFormat.replaceAll("%s", updatedVersion), gitSignOff);
             }
             if (createTag) {
