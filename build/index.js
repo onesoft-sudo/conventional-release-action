@@ -35886,8 +35886,11 @@ function run() {
                 .getInput("allowed-commit-types")
                 .split(",")
                 .filter(Boolean);
-            const versionJsonFiles = ((_b = (_a = core
-                .getInput("version-json-file")) === null || _a === void 0 ? void 0 : _a.split(",")) === null || _b === void 0 ? void 0 : _b.filter((s) => s !== "")) || ["package.json"];
+            const versionJsonFilesArray = (_b = (_a = core
+                .getInput("version-json-file")) === null || _a === void 0 ? void 0 : _a.split(",")) === null || _b === void 0 ? void 0 : _b.filter((s) => s !== "");
+            const versionJsonFiles = !(versionJsonFilesArray === null || versionJsonFilesArray === void 0 ? void 0 : versionJsonFilesArray.length)
+                ? ["package.json"]
+                : versionJsonFilesArray;
             const versionManagerModulePath = core.getInput("version-manager-module");
             const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
             const createTag = core.getInput("create-tag") === "true";

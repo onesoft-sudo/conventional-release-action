@@ -20,10 +20,13 @@ async function run() {
         .getInput("allowed-commit-types")
         .split(",")
         .filter(Boolean);
-    const versionJsonFiles = core
+    const versionJsonFilesArray = core
         .getInput("version-json-file")
         ?.split(",")
-        ?.filter((s) => s !== "") || ["package.json"];
+        ?.filter((s) => s !== "");
+    const versionJsonFiles = !versionJsonFilesArray?.length
+        ? ["package.json"]
+        : versionJsonFilesArray;
     const versionManagerModulePath = core.getInput("version-manager-module");
     const jsonTabWidth = parseInt(core.getInput("json-tab-width") || "4");
     const createTag = core.getInput("create-tag") === "true";
