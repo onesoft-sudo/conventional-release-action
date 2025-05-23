@@ -5,7 +5,7 @@ import { ClassifiedCommits } from "./VersionManager";
 
 class ChangeLogGenerator implements AsyncDisposable {
     private static readonly OSN_COMMONS_GENCHANGELOG_DL_URL =
-        "https://svn.onesoftnet.eu.org/svn/osn-commons/trunk/git/genchangelog";
+        "https://raw.githubusercontent.com/onesoft-sudo/conventional-release-action/refs/heads/main/scripts/genchangelog";
 
     private static readonly COMMIT_CLASSIFICATION: Record<
         keyof ClassifiedCommits,
