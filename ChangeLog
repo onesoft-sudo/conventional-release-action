@@ -1,3 +1,20 @@
+23-05-2025  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] fix: force rebuild
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+     [*] refactor: change download link of scripts used to github raw URLs
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+         
+
+28-10-2024  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.5.0 [skip ci]
+         
+
 28-10-2024  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
      [*] fix: handle version files correctly
