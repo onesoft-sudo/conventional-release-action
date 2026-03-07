@@ -1,24 +1,25 @@
 {
     "name": "conventional-release-action",
     "module": "src/index.ts",
-    "version": "1.5.1",
+    "version": "1.6.0",
     "scripts": {
         "build": "ncc build src/index.ts -o build"
     },
     "devDependencies": {
         "@types/bun": "latest",
-        "@types/semver": "^7.5.8",
+        "@types/semver": "^7.7.1",
         "@vercel/ncc": "^0.38.1",
-        "prettier": "^3.3.3"
+        "prettier": "^3.8.1",
+        "rollup": "^4.59.0"
     },
     "peerDependencies": {
         "typescript": "^5.0.0"
     },
     "dependencies": {
-        "@actions/core": "^1.10.1",
-        "@actions/exec": "^1.1.1",
-        "@actions/github": "^6.0.0",
-        "axios": "^1.7.5",
-        "semver": "^7.6.3"
+        "@actions/core": "^3.0.0",
+        "@actions/exec": "^3.0.0",
+        "@actions/github": "^9.0.0",
+        "axios": "^1.13.6",
+        "semver": "^7.7.4"
     }
 }
