@@ -1,3 +1,25 @@
+07-03-2026  Ar Rakin <rakinar2@osndevs.org>
+
+     [*] feat: deps update
+         
+         Signed-off-by: Ar Rakin <rakinar2@osndevs.org>
+         
+
+     [*] deps: remove unneeded deps
+         
+         Signed-off-by: Ar Rakin <rakinar2@osndevs.org>
+         
+
+     [*] deps: upgrade
+         
+         Signed-off-by: Ar Rakin <rakinar2@osndevs.org>
+         
+
+23-05-2025  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.5.1 [skip ci]
+         
+
 23-05-2025  Ar Rakin <rakinar2@onesoftnet.eu.org>
 
      [*] fix: force rebuild
