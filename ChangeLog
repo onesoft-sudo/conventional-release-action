@@ -1,3 +1,26 @@
+30-04-2026  Ar Rakin <rakinar2@osndevs.org>
+
+     [*] feat: force new release
+         
+         Signed-off-by: Ar Rakin <rakinar2@osndevs.org>
+         
+
+     [*] deps: update
+         
+         Signed-off-by: Ar Rakin <rakinar2@osndevs.org>
+         
+
+30-04-2026  Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+     [*] chore: update readme
+         
+         Signed-off-by: Ar Rakin <rakinar2@onesoftnet.eu.org>
+
+07-03-2026  Conventional Release Action <conventional-release@onesoftnet.eu.org>
+
+     [*] release: v1.7.0 [skip ci]
+         
+
 07-03-2026  Ar Rakin <rakinar2@osndevs.org>
 
      [*] feat: deps update
