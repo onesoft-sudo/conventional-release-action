@@ -4141,122 +4141,6 @@ function populateMaps (extensions, types) {
 
 /***/ }),
 
-/***/ 5331:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-
-var parseUrl = (__nccwpck_require__(7016).parse);
-
-var DEFAULT_PORTS = {
-  ftp: 21,
-  gopher: 70,
-  http: 80,
-  https: 443,
-  ws: 80,
-  wss: 443,
-};
-
-var stringEndsWith = String.prototype.endsWith || function(s) {
-  return s.length <= this.length &&
-    this.indexOf(s, this.length - s.length) !== -1;
-};
-
-/**
- * @param {string|object} url - The URL, or the result from url.parse.
- * @return {string} The URL of the proxy that should handle the request to the
- *  given URL. If no proxy is set, this will be an empty string.
- */
-function getProxyForUrl(url) {
-  var parsedUrl = typeof url === 'string' ? parseUrl(url) : url || {};
-  var proto = parsedUrl.protocol;
-  var hostname = parsedUrl.host;
-  var port = parsedUrl.port;
-  if (typeof hostname !== 'string' || !hostname || typeof proto !== 'string') {
-    return '';  // Don't proxy URLs without a valid scheme or host.
-  }
-
-  proto = proto.split(':', 1)[0];
-  // Stripping ports in this way instead of using parsedUrl.hostname to make
-  // sure that the brackets around IPv6 addresses are kept.
-  hostname = hostname.replace(/:\d*$/, '');
-  port = parseInt(port) || DEFAULT_PORTS[proto] || 0;
-  if (!shouldProxy(hostname, port)) {
-    return '';  // Don't proxy URLs that match NO_PROXY.
-  }
-
-  var proxy =
-    getEnv('npm_config_' + proto + '_proxy') ||
-    getEnv(proto + '_proxy') ||
-    getEnv('npm_config_proxy') ||
-    getEnv('all_proxy');
-  if (proxy && proxy.indexOf('://') === -1) {
-    // Missing scheme in proxy, default to the requested URL's scheme.
-    proxy = proto + '://' + proxy;
-  }
-  return proxy;
-}
-
-/**
- * Determines whether a given URL should be proxied.
- *
- * @param {string} hostname - The host name of the URL.
- * @param {number} port - The effective port of the URL.
- * @returns {boolean} Whether the given URL should be proxied.
- * @private
- */
-function shouldProxy(hostname, port) {
-  var NO_PROXY =
-    (getEnv('npm_config_no_proxy') || getEnv('no_proxy')).toLowerCase();
-  if (!NO_PROXY) {
-    return true;  // Always proxy if NO_PROXY is not set.
-  }
-  if (NO_PROXY === '*') {
-    return false;  // Never proxy if wildcard is set.
-  }
-
-  return NO_PROXY.split(/[,\s]/).every(function(proxy) {
-    if (!proxy) {
-      return true;  // Skip zero-length hosts.
-    }
-    var parsedProxy = proxy.match(/^(.+):(\d+)$/);
-    var parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
-    var parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
-    if (parsedProxyPort && parsedProxyPort !== port) {
-      return true;  // Skip if ports don't match.
-    }
-
-    if (!/^[.*]/.test(parsedProxyHostname)) {
-      // No wildcards, so stop proxying if there is an exact match.
-      return hostname !== parsedProxyHostname;
-    }
-
-    if (parsedProxyHostname.charAt(0) === '*') {
-      // Remove leading wildcard.
-      parsedProxyHostname = parsedProxyHostname.slice(1);
-    }
-    // Stop proxying if the hostname ends with the no_proxy host.
-    return !stringEndsWith.call(hostname, parsedProxyHostname);
-  });
-}
-
-/**
- * Get the value for an environment variable.
- *
- * @param {string} key - The name of the environment variable.
- * @return {string} The value of the environment variable.
- * @private
- */
-function getEnv(key) {
-  return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || '';
-}
-
-exports.getProxyForUrl = getProxyForUrl;
-
-
-/***/ }),
-
 /***/ 6222:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -35203,7 +35087,7 @@ var __webpack_exports__ = {};
 (() => {
 "use strict";
 
-// NAMESPACE OBJECT: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/common/utils.js
+// NAMESPACE OBJECT: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/common/utils.js
 var common_utils_namespaceObject = {};
 __nccwpck_require__.r(common_utils_namespaceObject);
 __nccwpck_require__.d(common_utils_namespaceObject, {
@@ -35216,7 +35100,7 @@ __nccwpck_require__.d(common_utils_namespaceObject, {
 
 ;// CONCATENATED MODULE: external "os"
 const external_os_namespaceObject = require("os");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/utils.js
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
@@ -35252,7 +35136,7 @@ function utils_toCommandProperties(annotationProperties) {
     };
 }
 //# sourceMappingURL=utils.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/command.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/command.js
 
 
 /**
@@ -35348,7 +35232,7 @@ function escapeProperty(s) {
 var external_crypto_ = __nccwpck_require__(6982);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(9896);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/file-command.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/file-command.js
 // For internal use, subject to change.
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -36257,7 +36141,7 @@ class PersonalAccessTokenCredentialHandler {
     }
 }
 //# sourceMappingURL=auth.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/oidc-utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/oidc-utils.js
 var oidc_utils_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36331,7 +36215,7 @@ class oidc_utils_OidcClient {
     }
 }
 //# sourceMappingURL=oidc-utils.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/summary.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/summary.js
 var summary_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36612,7 +36496,7 @@ const _summary = new Summary();
 const markdownSummary = (/* unused pure expression or super */ null && (_summary));
 const summary = (/* unused pure expression or super */ null && (_summary));
 //# sourceMappingURL=summary.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/path-utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/path-utils.js
 
 /**
  * toPosixPath converts the given path to the posix form. On Windows, \\ will be
@@ -37776,7 +37660,7 @@ function getExecOutput(commandLine, args, options) {
     });
 }
 //# sourceMappingURL=exec.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/platform.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/platform.js
 var platform_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37841,7 +37725,7 @@ function getDetails() {
     });
 }
 //# sourceMappingURL=platform.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js
 var core_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38159,7 +38043,7 @@ function getIDToken(aud) {
  */
 
 //# sourceMappingURL=core.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/context.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/context.js
 
 
 class Context {
@@ -38214,7 +38098,7 @@ class Context {
 //# sourceMappingURL=context.js.map
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+http-client@3.0.2/node_modules/@actions/http-client/lib/index.js
 var lib = __nccwpck_require__(7708);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/internal/utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/internal/utils.js
 var utils_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -38252,6 +38136,19 @@ function getProxyFetch(destinationUrl) {
 }
 function getApiBaseUrl() {
     return process.env['GITHUB_API_URL'] || 'https://api.github.com';
+}
+function getUserAgentWithOrchestrationId(baseUserAgent) {
+    var _a;
+    const orchId = (_a = process.env['ACTIONS_ORCHESTRATION_ID']) === null || _a === void 0 ? void 0 : _a.trim();
+    if (orchId) {
+        const sanitizedId = orchId.replace(/[^a-z0-9_.-]/gi, '_');
+        const tag = `actions_orchestration_id/${sanitizedId}`;
+        if (baseUserAgent === null || baseUserAgent === void 0 ? void 0 : baseUserAgent.includes(tag))
+            return baseUserAgent;
+        const ua = baseUserAgent ? `${baseUserAgent} ` : '';
+        return `${ua}${tag}`;
+    }
+    return baseUserAgent;
 }
 //# sourceMappingURL=utils.js.map
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/universal-user-agent@7.0.3/node_modules/universal-user-agent/index.js
@@ -42347,7 +42244,7 @@ function paginateRest(octokit) {
 paginateRest.VERSION = plugin_paginate_rest_dist_bundle_VERSION;
 
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/utils.js
 
 
 // octokit + plugins
@@ -42364,6 +42261,7 @@ const defaults = {
     }
 };
 const utils_GitHub = Octokit.plugin(restEndpointMethods, paginateRest).defaults(defaults);
+
 /**
  * Convience function to correctly format Octokit Options to pass into the constructor.
  *
@@ -42377,10 +42275,15 @@ function utils_getOctokitOptions(token, options) {
     if (auth) {
         opts.auth = auth;
     }
+    // Orchestration ID
+    const userAgent = Utils.getUserAgentWithOrchestrationId(opts.userAgent);
+    if (userAgent) {
+        opts.userAgent = userAgent;
+    }
     return opts;
 }
 //# sourceMappingURL=utils.js.map
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js
 
 
 const github_context = new Context();
@@ -42399,7 +42302,7 @@ function getOctokit(token, options, ...additionalPlugins) {
 const promises_namespaceObject = require("fs/promises");
 // EXTERNAL MODULE: ./node_modules/.pnpm/semver@7.7.4/node_modules/semver/index.js
 var semver = __nccwpck_require__(9419);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/bind.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/bind.js
 
 
 /**
@@ -42415,7 +42318,7 @@ function bind_bind(fn, thisArg) {
   };
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/utils.js
 
 
 
@@ -42675,16 +42578,16 @@ const G = getGlobal();
 const FormDataCtor = typeof G.FormData !== 'undefined' ? G.FormData : undefined;
 
 const isFormData = (thing) => {
-  let kind;
-  return thing && (
-    (FormDataCtor && thing instanceof FormDataCtor) || (
-      isFunction(thing.append) && (
-        (kind = kindOf(thing)) === 'formdata' ||
-        // detect form-data instance
-        (kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]')
-      )
-    )
-  );
+  if (!thing) return false;
+  if (FormDataCtor && thing instanceof FormDataCtor) return true;
+  // Reject plain objects inheriting directly from Object.prototype so prototype-pollution gadgets can't spoof FormData (GHSA-6chq-wfr3-2hj9).
+  const proto = getPrototypeOf(thing);
+  if (!proto || proto === Object.prototype) return false;
+  if (!isFunction(thing.append)) return false;
+  const kind = kindOf(thing);
+  return kind === 'formdata' ||
+    // detect form-data instance
+    (kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]');
 };
 
 /**
@@ -43336,7 +43239,7 @@ const isIterable = (thing) => thing != null && isFunction(thing[utils_iterator])
   isIterable,
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/AxiosError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/AxiosError.js
 
 
 
@@ -43356,40 +43259,40 @@ class AxiosError extends Error {
     return axiosError;
   }
 
-    /**
-     * Create an Error with the specified message, config, error code, request and response.
-     *
-     * @param {string} message The error message.
-     * @param {string} [code] The error code (for example, 'ECONNABORTED').
-     * @param {Object} [config] The config.
-     * @param {Object} [request] The request.
-     * @param {Object} [response] The response.
-     *
-     * @returns {Error} The created error.
-     */
-    constructor(message, code, config, request, response) {
-      super(message);
-      
-      // Make message enumerable to maintain backward compatibility
-      // The native Error constructor sets message as non-enumerable,
-      // but axios < v1.13.3 had it as enumerable
-      Object.defineProperty(this, 'message', {
-          value: message,
-          enumerable: true,
-          writable: true,
-          configurable: true
-      });
-      
-      this.name = 'AxiosError';
-      this.isAxiosError = true;
-      code && (this.code = code);
-      config && (this.config = config);
-      request && (this.request = request);
-      if (response) {
-          this.response = response;
-          this.status = response.status;
-      }
+  /**
+   * Create an Error with the specified message, config, error code, request and response.
+   *
+   * @param {string} message The error message.
+   * @param {string} [code] The error code (for example, 'ECONNABORTED').
+   * @param {Object} [config] The config.
+   * @param {Object} [request] The request.
+   * @param {Object} [response] The response.
+   *
+   * @returns {Error} The created error.
+   */
+  constructor(message, code, config, request, response) {
+    super(message);
+
+    // Make message enumerable to maintain backward compatibility
+    // The native Error constructor sets message as non-enumerable,
+    // but axios < v1.13.3 had it as enumerable
+    Object.defineProperty(this, 'message', {
+      value: message,
+      enumerable: true,
+      writable: true,
+      configurable: true,
+    });
+
+    this.name = 'AxiosError';
+    this.isAxiosError = true;
+    code && (this.code = code);
+    config && (this.config = config);
+    request && (this.request = request);
+    if (response) {
+      this.response = response;
+      this.status = response.status;
     }
+  }
 
   toJSON() {
     return {
@@ -43425,17 +43328,18 @@ AxiosError.ERR_BAD_REQUEST = 'ERR_BAD_REQUEST';
 AxiosError.ERR_CANCELED = 'ERR_CANCELED';
 AxiosError.ERR_NOT_SUPPORT = 'ERR_NOT_SUPPORT';
 AxiosError.ERR_INVALID_URL = 'ERR_INVALID_URL';
+AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED = 'ERR_FORM_DATA_DEPTH_EXCEEDED';
 
 /* harmony default export */ const core_AxiosError = (AxiosError);
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/form-data@4.0.5/node_modules/form-data/lib/form_data.js
 var form_data = __nccwpck_require__(2031);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/node/classes/FormData.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/node/classes/FormData.js
 
 
 /* harmony default export */ const classes_FormData = (form_data);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/toFormData.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/toFormData.js
 
 
 
@@ -43553,6 +43457,7 @@ function toFormData(obj, formData, options) {
   const dots = options.dots;
   const indexes = options.indexes;
   const _Blob = options.Blob || (typeof Blob !== 'undefined' && Blob);
+  const maxDepth = options.maxDepth === undefined ? 100 : options.maxDepth;
   const useBlob = _Blob && utils.isSpecCompliantForm(formData);
 
   if (!utils.isFunction(visitor)) {
@@ -43645,8 +43550,15 @@ function toFormData(obj, formData, options) {
     isVisitable,
   });
 
-  function build(value, path) {
+  function build(value, path, depth = 0) {
     if (utils.isUndefined(value)) return;
+
+    if (depth > maxDepth) {
+      throw new core_AxiosError(
+        'Object is too deeply nested (' + depth + ' levels). Max depth: ' + maxDepth,
+        core_AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED
+      );
+    }
 
     if (stack.indexOf(value) !== -1) {
       throw Error('Circular reference detected in ' + path.join('.'));
@@ -43660,7 +43572,7 @@ function toFormData(obj, formData, options) {
         visitor.call(formData, el, utils.isString(key) ? key.trim() : key, path, exposedHelpers);
 
       if (result === true) {
-        build(el, path ? path.concat(key) : [key]);
+        build(el, path ? path.concat(key) : [key], depth + 1);
       }
     });
 
@@ -43678,7 +43590,7 @@ function toFormData(obj, formData, options) {
 
 /* harmony default export */ const helpers_toFormData = (toFormData);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/AxiosURLSearchParams.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/AxiosURLSearchParams.js
 
 
 
@@ -43699,9 +43611,8 @@ function encode(str) {
     ')': '%29',
     '~': '%7E',
     '%20': '+',
-    '%00': '\x00',
   };
-  return encodeURIComponent(str).replace(/[!'()~]|%20|%00/g, function replacer(match) {
+  return encodeURIComponent(str).replace(/[!'()~]|%20/g, function replacer(match) {
     return charMap[match];
   });
 }
@@ -43742,15 +43653,15 @@ AxiosURLSearchParams_prototype.toString = function toString(encoder) {
 
 /* harmony default export */ const helpers_AxiosURLSearchParams = (AxiosURLSearchParams);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/buildURL.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/buildURL.js
 
 
 
 
 
 /**
- * It replaces all instances of the characters `:`, `$`, `,`, `+`, `[`, and `]` with their
- * URI encoded counterparts
+ * It replaces URL-encoded forms of `:`, `$`, `,`, and spaces with
+ * their plain counterparts (`:`, `$`, `,`, `+`).
  *
  * @param {string} val The value to be encoded.
  *
@@ -43810,7 +43721,7 @@ function buildURL(url, params, options) {
   return url;
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/InterceptorManager.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/InterceptorManager.js
 
 
 
@@ -43884,7 +43795,7 @@ class InterceptorManager {
 
 /* harmony default export */ const core_InterceptorManager = (InterceptorManager);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/defaults/transitional.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/defaults/transitional.js
 
 
 /* harmony default export */ const defaults_transitional = ({
@@ -43896,13 +43807,13 @@ class InterceptorManager {
 
 // EXTERNAL MODULE: external "url"
 var external_url_ = __nccwpck_require__(7016);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/node/classes/URLSearchParams.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/node/classes/URLSearchParams.js
 
 
 
 /* harmony default export */ const src_URLSearchParams = (external_url_.URLSearchParams);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/node/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/node/index.js
 
 
 
@@ -43941,7 +43852,7 @@ const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
   protocols: ['http', 'https', 'file', 'data'],
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/common/utils.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/common/utils.js
 const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'undefined';
 
 const _navigator = (typeof navigator === 'object' && navigator) || undefined;
@@ -43989,7 +43900,7 @@ const origin = (hasBrowserEnv && window.location.href) || 'http://localhost';
 
 
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/platform/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/platform/index.js
 
 
 
@@ -43998,7 +43909,7 @@ const origin = (hasBrowserEnv && window.location.href) || 'http://localhost';
   ...node,
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/toURLEncodedForm.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/toURLEncodedForm.js
 
 
 
@@ -44019,7 +43930,7 @@ function toURLEncodedForm(data, options) {
   });
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/formDataToJSON.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/formDataToJSON.js
 
 
 
@@ -44080,7 +43991,9 @@ function formDataToJSON(formData) {
 
     if (isLast) {
       if (utils.hasOwnProp(target, name)) {
-        target[name] = [target[name], value];
+        target[name] = utils.isArray(target[name])
+          ? target[name].concat(value)
+          : [target[name], value];
       } else {
         target[name] = value;
       }
@@ -44116,7 +44029,7 @@ function formDataToJSON(formData) {
 
 /* harmony default export */ const helpers_formDataToJSON = (formDataToJSON);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/defaults/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/defaults/index.js
 
 
 
@@ -44126,6 +44039,8 @@ function formDataToJSON(formData) {
 
 
 
+
+const own = (obj, key) => (obj != null && utils.hasOwnProp(obj, key) ? obj[key] : undefined);
 
 /**
  * It takes a string, tries to parse it, and if it fails, it returns the stringified version
@@ -44194,20 +44109,22 @@ const defaults_defaults = {
       let isFileList;
 
       if (isObjectPayload) {
+        const formSerializer = own(this, 'formSerializer');
         if (contentType.indexOf('application/x-www-form-urlencoded') > -1) {
-          return toURLEncodedForm(data, this.formSerializer).toString();
+          return toURLEncodedForm(data, formSerializer).toString();
         }
 
         if (
           (isFileList = utils.isFileList(data)) ||
           contentType.indexOf('multipart/form-data') > -1
         ) {
-          const _FormData = this.env && this.env.FormData;
+          const env = own(this, 'env');
+          const _FormData = env && env.FormData;
 
           return helpers_toFormData(
             isFileList ? { 'files[]': data } : data,
             _FormData && new _FormData(),
-            this.formSerializer
+            formSerializer
           );
         }
       }
@@ -44223,9 +44140,10 @@ const defaults_defaults = {
 
   transformResponse: [
     function transformResponse(data) {
-      const transitional = this.transitional || defaults_defaults.transitional;
+      const transitional = own(this, 'transitional') || defaults_defaults.transitional;
       const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-      const JSONRequested = this.responseType === 'json';
+      const responseType = own(this, 'responseType');
+      const JSONRequested = responseType === 'json';
 
       if (utils.isResponse(data) || utils.isReadableStream(data)) {
         return data;
@@ -44234,17 +44152,17 @@ const defaults_defaults = {
       if (
         data &&
         utils.isString(data) &&
-        ((forcedJSONParsing && !this.responseType) || JSONRequested)
+        ((forcedJSONParsing && !responseType) || JSONRequested)
       ) {
         const silentJSONParsing = transitional && transitional.silentJSONParsing;
         const strictJSONParsing = !silentJSONParsing && JSONRequested;
 
         try {
-          return JSON.parse(data, this.parseReviver);
+          return JSON.parse(data, own(this, 'parseReviver'));
         } catch (e) {
           if (strictJSONParsing) {
             if (e.name === 'SyntaxError') {
-              throw core_AxiosError.from(e, core_AxiosError.ERR_BAD_RESPONSE, this, null, this.response);
+              throw core_AxiosError.from(e, core_AxiosError.ERR_BAD_RESPONSE, this, null, own(this, 'response'));
             }
             throw e;
           }
@@ -44290,7 +44208,7 @@ utils.forEach(['delete', 'get', 'head', 'post', 'put', 'patch'], (method) => {
 
 /* harmony default export */ const lib_defaults = (defaults_defaults);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/parseHeaders.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/parseHeaders.js
 
 
 
@@ -44361,7 +44279,7 @@ const ignoreDuplicateOf = utils.toObjectSet([
   return parsed;
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/AxiosHeaders.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/AxiosHeaders.js
 
 
 
@@ -44369,8 +44287,41 @@ const ignoreDuplicateOf = utils.toObjectSet([
 
 const $internals = Symbol('internals');
 
+const INVALID_HEADER_VALUE_CHARS_RE = /[^\x09\x20-\x7E\x80-\xFF]/g;
+
+function trimSPorHTAB(str) {
+  let start = 0;
+  let end = str.length;
+
+  while (start < end) {
+    const code = str.charCodeAt(start);
+
+    if (code !== 0x09 && code !== 0x20) {
+      break;
+    }
+
+    start += 1;
+  }
+
+  while (end > start) {
+    const code = str.charCodeAt(end - 1);
+
+    if (code !== 0x09 && code !== 0x20) {
+      break;
+    }
+
+    end -= 1;
+  }
+
+  return start === 0 && end === str.length ? str : str.slice(start, end);
+}
+
 function normalizeHeader(header) {
   return header && String(header).trim().toLowerCase();
+}
+
+function sanitizeHeaderValue(str) {
+  return trimSPorHTAB(str.replace(INVALID_HEADER_VALUE_CHARS_RE, ''));
 }
 
 function normalizeValue(value) {
@@ -44378,7 +44329,7 @@ function normalizeValue(value) {
     return value;
   }
 
-  return utils.isArray(value) ? value.map(normalizeValue) : String(value);
+  return utils.isArray(value) ? value.map(normalizeValue) : sanitizeHeaderValue(String(value));
 }
 
 function parseTokens(str) {
@@ -44707,7 +44658,7 @@ utils.freezeMethods(AxiosHeaders);
 
 /* harmony default export */ const core_AxiosHeaders = (AxiosHeaders);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/transformData.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/transformData.js
 
 
 
@@ -44737,14 +44688,14 @@ function transformData(fns, response) {
   return data;
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/cancel/isCancel.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/cancel/isCancel.js
 
 
 function isCancel(value) {
   return !!(value && value.__CANCEL__);
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/cancel/CanceledError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/cancel/CanceledError.js
 
 
 
@@ -44768,7 +44719,7 @@ class CanceledError extends core_AxiosError {
 
 /* harmony default export */ const cancel_CanceledError = (CanceledError);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/settle.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/settle.js
 
 
 
@@ -44801,7 +44752,7 @@ function settle(resolve, reject, response) {
   }
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/isAbsoluteURL.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/isAbsoluteURL.js
 
 
 /**
@@ -44822,7 +44773,7 @@ function isAbsoluteURL(url) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/combineURLs.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/combineURLs.js
 
 
 /**
@@ -44839,7 +44790,7 @@ function combineURLs(baseURL, relativeURL) {
     : baseURL;
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/buildFullPath.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/buildFullPath.js
 
 
 
@@ -44857,14 +44808,117 @@ function combineURLs(baseURL, relativeURL) {
  */
 function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
   let isRelativeUrl = !isAbsoluteURL(requestedURL);
-  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
+  if (baseURL && (isRelativeUrl || allowAbsoluteUrls === false)) {
     return combineURLs(baseURL, requestedURL);
   }
   return requestedURL;
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/proxy-from-env@1.1.0/node_modules/proxy-from-env/index.js
-var proxy_from_env = __nccwpck_require__(5331);
+;// CONCATENATED MODULE: ./node_modules/.pnpm/proxy-from-env@2.1.0/node_modules/proxy-from-env/index.js
+
+
+var DEFAULT_PORTS = {
+  ftp: 21,
+  gopher: 70,
+  http: 80,
+  https: 443,
+  ws: 80,
+  wss: 443,
+};
+
+function proxy_from_env_parseUrl(urlString) {
+  try {
+    return new URL(urlString);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * @param {string|object|URL} url - The URL as a string or URL instance, or a
+ *   compatible object (such as the result from legacy url.parse).
+ * @return {string} The URL of the proxy that should handle the request to the
+ *  given URL. If no proxy is set, this will be an empty string.
+ */
+function getProxyForUrl(url) {
+  var parsedUrl = (typeof url === 'string' ? proxy_from_env_parseUrl(url) : url) || {};
+  var proto = parsedUrl.protocol;
+  var hostname = parsedUrl.host;
+  var port = parsedUrl.port;
+  if (typeof hostname !== 'string' || !hostname || typeof proto !== 'string') {
+    return '';  // Don't proxy URLs without a valid scheme or host.
+  }
+
+  proto = proto.split(':', 1)[0];
+  // Stripping ports in this way instead of using parsedUrl.hostname to make
+  // sure that the brackets around IPv6 addresses are kept.
+  hostname = hostname.replace(/:\d*$/, '');
+  port = parseInt(port) || DEFAULT_PORTS[proto] || 0;
+  if (!shouldProxy(hostname, port)) {
+    return '';  // Don't proxy URLs that match NO_PROXY.
+  }
+
+  var proxy = getEnv(proto + '_proxy') || getEnv('all_proxy');
+  if (proxy && proxy.indexOf('://') === -1) {
+    // Missing scheme in proxy, default to the requested URL's scheme.
+    proxy = proto + '://' + proxy;
+  }
+  return proxy;
+}
+
+/**
+ * Determines whether a given URL should be proxied.
+ *
+ * @param {string} hostname - The host name of the URL.
+ * @param {number} port - The effective port of the URL.
+ * @returns {boolean} Whether the given URL should be proxied.
+ * @private
+ */
+function shouldProxy(hostname, port) {
+  var NO_PROXY = getEnv('no_proxy').toLowerCase();
+  if (!NO_PROXY) {
+    return true;  // Always proxy if NO_PROXY is not set.
+  }
+  if (NO_PROXY === '*') {
+    return false;  // Never proxy if wildcard is set.
+  }
+
+  return NO_PROXY.split(/[,\s]/).every(function(proxy) {
+    if (!proxy) {
+      return true;  // Skip zero-length hosts.
+    }
+    var parsedProxy = proxy.match(/^(.+):(\d+)$/);
+    var parsedProxyHostname = parsedProxy ? parsedProxy[1] : proxy;
+    var parsedProxyPort = parsedProxy ? parseInt(parsedProxy[2]) : 0;
+    if (parsedProxyPort && parsedProxyPort !== port) {
+      return true;  // Skip if ports don't match.
+    }
+
+    if (!/^[.*]/.test(parsedProxyHostname)) {
+      // No wildcards, so stop proxying if there is an exact match.
+      return hostname !== parsedProxyHostname;
+    }
+
+    if (parsedProxyHostname.charAt(0) === '*') {
+      // Remove leading wildcard.
+      parsedProxyHostname = parsedProxyHostname.slice(1);
+    }
+    // Stop proxying if the hostname ends with the no_proxy host.
+    return !hostname.endsWith(parsedProxyHostname);
+  });
+}
+
+/**
+ * Get the value for an environment variable.
+ *
+ * @param {string} key - The name of the environment variable.
+ * @return {string} The value of the environment variable.
+ * @private
+ */
+function getEnv(key) {
+  return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || '';
+}
+
 ;// CONCATENATED MODULE: external "http2"
 const external_http2_namespaceObject = require("http2");
 // EXTERNAL MODULE: external "util"
@@ -44873,9 +44927,9 @@ var external_util_ = __nccwpck_require__(9023);
 var follow_redirects = __nccwpck_require__(6676);
 ;// CONCATENATED MODULE: external "zlib"
 const external_zlib_namespaceObject = require("zlib");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/env/data.js
-const data_VERSION = "1.13.6";
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/parseProtocol.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/env/data.js
+const data_VERSION = "1.15.2";
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/parseProtocol.js
 
 
 function parseProtocol(url) {
@@ -44883,7 +44937,7 @@ function parseProtocol(url) {
   return (match && match[1]) || '';
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/fromDataURI.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/fromDataURI.js
 
 
 
@@ -44940,7 +44994,7 @@ function fromDataURI(uri, asBlob, options) {
 
 // EXTERNAL MODULE: external "stream"
 var external_stream_ = __nccwpck_require__(2203);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/AxiosTransformStream.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/AxiosTransformStream.js
 
 
 
@@ -45098,7 +45152,7 @@ class AxiosTransformStream extends external_stream_.Transform {
 
 /* harmony default export */ const helpers_AxiosTransformStream = (AxiosTransformStream);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/readBlob.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/readBlob.js
 const { asyncIterator } = Symbol;
 
 const readBlob = async function* (blob) {
@@ -45115,7 +45169,7 @@ const readBlob = async function* (blob) {
 
 /* harmony default export */ const helpers_readBlob = (readBlob);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/formDataToStream.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/formDataToStream.js
 
 
 
@@ -45142,7 +45196,8 @@ class FormDataPart {
     if (isStringValue) {
       value = textEncoder.encode(String(value).replace(/\r?\n|\r\n?/g, CRLF));
     } else {
-      headers += `Content-Type: ${value.type || 'application/octet-stream'}${CRLF}`;
+      const safeType = String(value.type || 'application/octet-stream').replace(/[\r\n]/g, '');
+      headers += `Content-Type: ${safeType}${CRLF}`;
     }
 
     this.headers = textEncoder.encode(headers + CRLF);
@@ -45235,7 +45290,7 @@ const formDataToStream = (form, headersHandler, options) => {
 
 /* harmony default export */ const helpers_formDataToStream = (formDataToStream);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/ZlibHeaderTransformStream.js
 
 
 
@@ -45266,7 +45321,7 @@ class ZlibHeaderTransformStream extends external_stream_.Transform {
 
 /* harmony default export */ const helpers_ZlibHeaderTransformStream = (ZlibHeaderTransformStream);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/callbackify.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/callbackify.js
 
 
 const callbackify = (fn, reducer) => {
@@ -45286,7 +45341,162 @@ const callbackify = (fn, reducer) => {
 
 /* harmony default export */ const helpers_callbackify = (callbackify);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/speedometer.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/shouldBypassProxy.js
+const LOOPBACK_HOSTNAMES = new Set(['localhost']);
+
+const isIPv4Loopback = (host) => {
+  const parts = host.split('.');
+  if (parts.length !== 4) return false;
+  if (parts[0] !== '127') return false;
+  return parts.every((p) => /^\d+$/.test(p) && Number(p) >= 0 && Number(p) <= 255);
+};
+
+const isIPv6Loopback = (host) => {
+  // Collapse all-zero groups: any form of ::1 / 0:0:...:0:1
+  // First, strip any leading "::" by normalising with Set lookup of common forms,
+  // then fall back to structural check.
+  if (host === '::1') return true;
+
+  // Check IPv4-mapped IPv6 loopback: ::ffff:<v4-loopback> or ::ffff:<hex-v4-loopback>
+  // Node's URL parser normalises ::ffff:127.0.0.1 → ::ffff:7f00:1
+  const v4MappedDotted = host.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i);
+  if (v4MappedDotted) return isIPv4Loopback(v4MappedDotted[1]);
+
+  const v4MappedHex = host.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/i);
+  if (v4MappedHex) {
+    const high = parseInt(v4MappedHex[1], 16);
+    // High 16 bits must start with 127 (0x7f) — i.e. 0x7f00..0x7fff
+    return high >= 0x7f00 && high <= 0x7fff;
+  }
+
+  // Full-form ::1 variants: any number of zero groups followed by trailing 1
+  // e.g. 0:0:0:0:0:0:0:1, 0000:...:0001
+  const groups = host.split(':');
+  if (groups.length === 8) {
+    for (let i = 0; i < 7; i++) {
+      if (!/^0+$/.test(groups[i])) return false;
+    }
+    return /^0*1$/.test(groups[7]);
+  }
+
+  return false;
+};
+
+const isLoopback = (host) => {
+  if (!host) return false;
+  if (LOOPBACK_HOSTNAMES.has(host)) return true;
+  if (isIPv4Loopback(host)) return true;
+  return isIPv6Loopback(host);
+};
+
+const shouldBypassProxy_DEFAULT_PORTS = {
+  http: 80,
+  https: 443,
+  ws: 80,
+  wss: 443,
+  ftp: 21,
+};
+
+const parseNoProxyEntry = (entry) => {
+  let entryHost = entry;
+  let entryPort = 0;
+
+  if (entryHost.charAt(0) === '[') {
+    const bracketIndex = entryHost.indexOf(']');
+
+    if (bracketIndex !== -1) {
+      const host = entryHost.slice(1, bracketIndex);
+      const rest = entryHost.slice(bracketIndex + 1);
+
+      if (rest.charAt(0) === ':' && /^\d+$/.test(rest.slice(1))) {
+        entryPort = Number.parseInt(rest.slice(1), 10);
+      }
+
+      return [host, entryPort];
+    }
+  }
+
+  const firstColon = entryHost.indexOf(':');
+  const lastColon = entryHost.lastIndexOf(':');
+
+  if (
+    firstColon !== -1 &&
+    firstColon === lastColon &&
+    /^\d+$/.test(entryHost.slice(lastColon + 1))
+  ) {
+    entryPort = Number.parseInt(entryHost.slice(lastColon + 1), 10);
+    entryHost = entryHost.slice(0, lastColon);
+  }
+
+  return [entryHost, entryPort];
+};
+
+const normalizeNoProxyHost = (hostname) => {
+  if (!hostname) {
+    return hostname;
+  }
+
+  if (hostname.charAt(0) === '[' && hostname.charAt(hostname.length - 1) === ']') {
+    hostname = hostname.slice(1, -1);
+  }
+
+  return hostname.replace(/\.+$/, '');
+};
+
+function shouldBypassProxy(location) {
+  let parsed;
+
+  try {
+    parsed = new URL(location);
+  } catch (_err) {
+    return false;
+  }
+
+  const noProxy = (process.env.no_proxy || process.env.NO_PROXY || '').toLowerCase();
+
+  if (!noProxy) {
+    return false;
+  }
+
+  if (noProxy === '*') {
+    return true;
+  }
+
+  const port =
+    Number.parseInt(parsed.port, 10) || shouldBypassProxy_DEFAULT_PORTS[parsed.protocol.split(':', 1)[0]] || 0;
+
+  const hostname = normalizeNoProxyHost(parsed.hostname.toLowerCase());
+
+  return noProxy.split(/[\s,]+/).some((entry) => {
+    if (!entry) {
+      return false;
+    }
+
+    let [entryHost, entryPort] = parseNoProxyEntry(entry);
+
+    entryHost = normalizeNoProxyHost(entryHost);
+
+    if (!entryHost) {
+      return false;
+    }
+
+    if (entryPort && entryPort !== port) {
+      return false;
+    }
+
+    if (entryHost.charAt(0) === '*') {
+      entryHost = entryHost.slice(1);
+    }
+
+    if (entryHost.charAt(0) === '.') {
+      return hostname.endsWith(entryHost);
+    }
+
+    return hostname === entryHost || (isLoopback(hostname) && isLoopback(entryHost));
+  });
+}
+
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/speedometer.js
 
 
 /**
@@ -45343,7 +45553,7 @@ function speedometer(samplesCount, min) {
 
 /* harmony default export */ const helpers_speedometer = (speedometer);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/throttle.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/throttle.js
 /**
  * Throttle decorator
  * @param {Function} fn
@@ -45389,7 +45599,7 @@ function throttle(fn, freq) {
 
 /* harmony default export */ const helpers_throttle = (throttle);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/progressEventReducer.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/progressEventReducer.js
 
 
 
@@ -45399,13 +45609,13 @@ const progressEventReducer = (listener, isDownloadStream, freq = 3) => {
   const _speedometer = helpers_speedometer(50, 250);
 
   return helpers_throttle((e) => {
-    const loaded = e.loaded;
+    const rawLoaded = e.loaded;
     const total = e.lengthComputable ? e.total : undefined;
-    const progressBytes = loaded - bytesNotified;
+    const loaded = total != null ? Math.min(rawLoaded, total) : rawLoaded;
+    const progressBytes = Math.max(0, loaded - bytesNotified);
     const rate = _speedometer(progressBytes);
-    const inRange = loaded <= total;
 
-    bytesNotified = loaded;
+    bytesNotified = Math.max(bytesNotified, loaded);
 
     const data = {
       loaded,
@@ -45413,7 +45623,7 @@ const progressEventReducer = (listener, isDownloadStream, freq = 3) => {
       progress: total ? loaded / total : undefined,
       bytes: progressBytes,
       rate: rate ? rate : undefined,
-      estimated: rate && total && inRange ? (total - loaded) / rate : undefined,
+      estimated: rate && total ? (total - loaded) / rate : undefined,
       event: e,
       lengthComputable: total != null,
       [isDownloadStream ? 'download' : 'upload']: true,
@@ -45442,7 +45652,7 @@ const asyncDecorator =
   (...args) =>
     utils.asap(() => fn(...args));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
 /**
  * Estimate decoded byte length of a data:// URL *without* allocating large buffers.
  * - For base64: compute exact decoded size using length and padding;
@@ -45517,7 +45727,9 @@ function estimateDataURLDecodedBytes(url) {
   return Buffer.byteLength(body, 'utf8');
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/adapters/http.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/adapters/http.js
+
+
 
 
 
@@ -45561,6 +45773,11 @@ const isBrotliSupported = utils.isFunction(external_zlib_namespaceObject.createB
 const { http: httpFollow, https: httpsFollow } = follow_redirects;
 
 const http_isHttps = /https:?/;
+
+// Symbols used to bind a single 'error' listener to a pooled socket and track
+// the request currently owning that socket across keep-alive reuse (issue #10780).
+const kAxiosSocketListener = Symbol('axios.http.socketListener');
+const kAxiosCurrentReq = Symbol('axios.http.currentReq');
 
 const supportedProtocols = lib_platform.protocols.map((protocol) => {
   return protocol + ':';
@@ -45623,6 +45840,9 @@ class Http2Sessions {
             delete this.sessions[authority];
           } else {
             entries.splice(i, 1);
+          }
+          if (!session.closed) {
+            session.close();
           }
           return;
         }
@@ -45703,9 +45923,11 @@ function dispatchBeforeRedirect(options, responseDetails) {
 function setProxy(options, configProxy, location) {
   let proxy = configProxy;
   if (!proxy && proxy !== false) {
-    const proxyUrl = proxy_from_env.getProxyForUrl(location);
+    const proxyUrl = getProxyForUrl(location);
     if (proxyUrl) {
-      proxy = new URL(proxyUrl);
+      if (!shouldBypassProxy(location)) {
+        proxy = new URL(proxyUrl);
+      }
     }
   }
   if (proxy) {
@@ -45843,8 +46065,15 @@ const http2Transport = {
 /* harmony default export */ const adapters_http = (isHttpAdapterSupported &&
   function httpAdapter(config) {
     return wrapAsync(async function dispatchHttpRequest(resolve, reject, onDone) {
-      let { data, lookup, family, httpVersion = 1, http2Options } = config;
-      const { responseType, responseEncoding } = config;
+      const own = (key) => (utils.hasOwnProp(config, key) ? config[key] : undefined);
+      let data = own('data');
+      let lookup = own('lookup');
+      let family = own('family');
+      let httpVersion = own('httpVersion');
+      if (httpVersion === undefined) httpVersion = 1;
+      let http2Options = own('http2Options');
+      const responseType = own('responseType');
+      const responseEncoding = own('responseEncoding');
       const method = config.method.toUpperCase();
       let isDone;
       let rejected = false;
@@ -46030,7 +46259,8 @@ const http2Transport = {
           }
         );
         // support for https://www.npmjs.com/package/form-data api
-      } else if (utils.isFormData(data) && utils.isFunction(data.getHeaders)) {
+      } else if (utils.isFormData(data) && utils.isFunction(data.getHeaders) &&
+                 data.getHeaders !== Object.prototype.getHeaders) {
         headers.set(data.getHeaders());
 
         if (!headers.hasContentLength()) {
@@ -46116,9 +46346,10 @@ const http2Transport = {
 
       // HTTP basic authentication
       let auth = undefined;
-      if (config.auth) {
-        const username = config.auth.username || '';
-        const password = config.auth.password || '';
+      const configAuth = own('auth');
+      if (configAuth) {
+        const username = configAuth.username || '';
+        const password = configAuth.password || '';
         auth = username + ':' + password;
       }
 
@@ -46152,7 +46383,10 @@ const http2Transport = {
         false
       );
 
-      const options = {
+      // Null-prototype to block prototype pollution gadgets on properties read
+      // directly by Node's http.request (e.g. insecureHTTPParser, lookup).
+      // See GHSA-q8qp-cvcw-x6jj.
+      const options = Object.assign(Object.create(null), {
         path,
         method: method,
         headers: headers.toJSON(),
@@ -46161,14 +46395,41 @@ const http2Transport = {
         protocol,
         family,
         beforeRedirect: dispatchBeforeRedirect,
-        beforeRedirects: {},
+        beforeRedirects: Object.create(null),
         http2Options,
-      };
+      });
 
       // cacheable-lookup integration hotfix
       !utils.isUndefined(lookup) && (options.lookup = lookup);
 
       if (config.socketPath) {
+        if (typeof config.socketPath !== 'string') {
+          return reject(new core_AxiosError(
+            'socketPath must be a string',
+            core_AxiosError.ERR_BAD_OPTION_VALUE,
+            config
+          ));
+        }
+
+        if (config.allowedSocketPaths != null) {
+          const allowed = Array.isArray(config.allowedSocketPaths)
+            ? config.allowedSocketPaths
+            : [config.allowedSocketPaths];
+
+          const resolvedSocket = (0,external_path_.resolve)(config.socketPath);
+          const isAllowed = allowed.some(
+            (entry) => typeof entry === 'string' && (0,external_path_.resolve)(entry) === resolvedSocket
+          );
+
+          if (!isAllowed) {
+            return reject(new core_AxiosError(
+              `socketPath "${config.socketPath}" is not permitted by allowedSocketPaths`,
+              core_AxiosError.ERR_BAD_OPTION_VALUE,
+              config
+            ));
+          }
+        }
+
         options.socketPath = config.socketPath;
       } else {
         options.hostname = parsed.hostname.startsWith('[')
@@ -46181,7 +46442,6 @@ const http2Transport = {
           protocol + '//' + parsed.hostname + (parsed.port ? ':' + parsed.port : '') + options.path
         );
       }
-
       let transport;
       const isHttpsRequest = http_isHttps.test(options.protocol);
       options.agent = isHttpsRequest ? config.httpsAgent : config.httpAgent;
@@ -46189,16 +46449,18 @@ const http2Transport = {
       if (isHttp2) {
         transport = http2Transport;
       } else {
-        if (config.transport) {
-          transport = config.transport;
+        const configTransport = own('transport');
+        if (configTransport) {
+          transport = configTransport;
         } else if (config.maxRedirects === 0) {
           transport = isHttpsRequest ? external_https_ : external_http_;
         } else {
           if (config.maxRedirects) {
             options.maxRedirects = config.maxRedirects;
           }
-          if (config.beforeRedirect) {
-            options.beforeRedirects.config = config.beforeRedirect;
+          const configBeforeRedirect = own('beforeRedirect');
+          if (configBeforeRedirect) {
+            options.beforeRedirects.config = configBeforeRedirect;
           }
           transport = isHttpsRequest ? httpsFollow : httpFollow;
         }
@@ -46211,9 +46473,10 @@ const http2Transport = {
         options.maxBodyLength = Infinity;
       }
 
-      if (config.insecureHTTPParser) {
-        options.insecureHTTPParser = config.insecureHTTPParser;
-      }
+      // Always set an explicit own value so a polluted
+      // Object.prototype.insecureHTTPParser cannot enable the lenient parser
+      // through Node's internal options copy (GHSA-q8qp-cvcw-x6jj).
+      options.insecureHTTPParser = Boolean(own('insecureHTTPParser'));
 
       // Create the request
       req = transport.request(options, function handleResponse(res) {
@@ -46297,6 +46560,30 @@ const http2Transport = {
         };
 
         if (responseType === 'stream') {
+          // Enforce maxContentLength on streamed responses; previously this
+          // was applied only to buffered responses. See GHSA-vf2m-468p-8v99.
+          if (config.maxContentLength > -1) {
+            const limit = config.maxContentLength;
+            const source = responseStream;
+            async function* enforceMaxContentLength() {
+              let totalResponseBytes = 0;
+              for await (const chunk of source) {
+                totalResponseBytes += chunk.length;
+                if (totalResponseBytes > limit) {
+                  throw new core_AxiosError(
+                    'maxContentLength size of ' + limit + ' exceeded',
+                    core_AxiosError.ERR_BAD_RESPONSE,
+                    config,
+                    lastRequest
+                  );
+                }
+                yield chunk;
+              }
+            }
+            responseStream = external_stream_.Readable.from(enforceMaxContentLength(), {
+              objectMode: false,
+            });
+          }
           response.data = responseStream;
           settle(resolve, reject, response);
         } else {
@@ -46386,6 +46673,29 @@ const http2Transport = {
       req.on('socket', function handleRequestSocket(socket) {
         // default interval of sending ack packet is 1 minute
         socket.setKeepAlive(true, 1000 * 60);
+
+        // Install a single 'error' listener per socket (not per request) to avoid
+        // accumulating listeners on pooled keep-alive sockets that get reassigned
+        // to new requests before the previous request's 'close' fires (issue #10780).
+        // The listener is bound to the socket's currently-active request via a
+        // symbol, which is swapped as the socket is reassigned.
+        if (!socket[kAxiosSocketListener]) {
+          socket.on('error', function handleSocketError(err) {
+            const current = socket[kAxiosCurrentReq];
+            if (current && !current.destroyed) {
+              current.destroy(err);
+            }
+          });
+          socket[kAxiosSocketListener] = true;
+        }
+
+        socket[kAxiosCurrentReq] = req;
+
+        req.once('close', function clearCurrentReq() {
+          if (socket[kAxiosCurrentReq] === req) {
+            socket[kAxiosCurrentReq] = null;
+          }
+        });
       });
 
       // Handle request timeout
@@ -46454,7 +46764,41 @@ const http2Transport = {
           }
         });
 
-        data.pipe(req);
+        // Enforce maxBodyLength for streamed uploads on the native http/https
+        // transport (maxRedirects === 0); follow-redirects enforces it on the
+        // other path. See GHSA-5c9x-8gcm-mpgx.
+        let uploadStream = data;
+        if (config.maxBodyLength > -1 && config.maxRedirects === 0) {
+          const limit = config.maxBodyLength;
+          let bytesSent = 0;
+          uploadStream = external_stream_.pipeline(
+            [
+              data,
+              new external_stream_.Transform({
+                transform(chunk, _enc, cb) {
+                  bytesSent += chunk.length;
+                  if (bytesSent > limit) {
+                    return cb(
+                      new core_AxiosError(
+                        'Request body larger than maxBodyLength limit',
+                        core_AxiosError.ERR_BAD_REQUEST,
+                        config,
+                        req
+                      )
+                    );
+                  }
+                  cb(null, chunk);
+                },
+              }),
+            ],
+            utils.noop
+          );
+          uploadStream.on('error', (err) => {
+            if (!req.destroyed) req.destroy(err);
+          });
+        }
+
+        uploadStream.pipe(req);
       } else {
         data && req.write(data);
         req.end();
@@ -46464,7 +46808,7 @@ const http2Transport = {
 
 const __setProxy = (/* unused pure expression or super */ null && (setProxy));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/isURLSameOrigin.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/isURLSameOrigin.js
 
 
 /* harmony default export */ const isURLSameOrigin = (lib_platform.hasStandardBrowserEnv
@@ -46482,7 +46826,7 @@ const __setProxy = (/* unused pure expression or super */ null && (setProxy));
     )
   : () => true);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/cookies.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/cookies.js
 
 
 
@@ -46532,7 +46876,7 @@ const __setProxy = (/* unused pure expression or super */ null && (setProxy));
       remove() {},
     });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/mergeConfig.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/mergeConfig.js
 
 
 
@@ -46552,7 +46896,18 @@ const headersToObject = (thing) => (thing instanceof core_AxiosHeaders ? { ...th
 function mergeConfig(config1, config2) {
   // eslint-disable-next-line no-param-reassign
   config2 = config2 || {};
-  const config = {};
+
+  // Use a null-prototype object so that downstream reads such as `config.auth`
+  // or `config.baseURL` cannot inherit polluted values from Object.prototype
+  // (see GHSA-q8qp-cvcw-x6jj). `hasOwnProperty` is restored as a non-enumerable
+  // own slot to preserve ergonomics for user code that relies on it.
+  const config = Object.create(null);
+  Object.defineProperty(config, 'hasOwnProperty', {
+    value: Object.prototype.hasOwnProperty,
+    enumerable: false,
+    writable: true,
+    configurable: true,
+  });
 
   function getMergedValue(target, source, prop, caseless) {
     if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
@@ -46591,9 +46946,9 @@ function mergeConfig(config1, config2) {
 
   // eslint-disable-next-line consistent-return
   function mergeDirectKeys(a, b, prop) {
-    if (prop in config2) {
+    if (utils.hasOwnProp(config2, prop)) {
       return getMergedValue(a, b);
-    } else if (prop in config1) {
+    } else if (utils.hasOwnProp(config1, prop)) {
       return getMergedValue(undefined, a);
     }
   }
@@ -46625,6 +46980,7 @@ function mergeConfig(config1, config2) {
     httpsAgent: defaultToConfig2,
     cancelToken: defaultToConfig2,
     socketPath: defaultToConfig2,
+    allowedSocketPaths: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     validateStatus: mergeDirectKeys,
     headers: (a, b, prop) =>
@@ -46634,14 +46990,16 @@ function mergeConfig(config1, config2) {
   utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(prop) {
     if (prop === '__proto__' || prop === 'constructor' || prop === 'prototype') return;
     const merge = utils.hasOwnProp(mergeMap, prop) ? mergeMap[prop] : mergeDeepProperties;
-    const configValue = merge(config1[prop], config2[prop], prop);
+    const a = utils.hasOwnProp(config1, prop) ? config1[prop] : undefined;
+    const b = utils.hasOwnProp(config2, prop) ? config2[prop] : undefined;
+    const configValue = merge(a, b, prop);
     (utils.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);
   });
 
   return config;
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/resolveConfig.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/resolveConfig.js
 
 
 
@@ -46654,12 +47012,24 @@ function mergeConfig(config1, config2) {
 /* harmony default export */ const resolveConfig = ((config) => {
   const newConfig = mergeConfig({}, config);
 
-  let { data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth } = newConfig;
+  // Read only own properties to prevent prototype pollution gadgets
+  // (e.g. Object.prototype.baseURL = 'https://evil.com'). See GHSA-q8qp-cvcw-x6jj.
+  const own = (key) => (utils.hasOwnProp(newConfig, key) ? newConfig[key] : undefined);
+
+  const data = own('data');
+  let withXSRFToken = own('withXSRFToken');
+  const xsrfHeaderName = own('xsrfHeaderName');
+  const xsrfCookieName = own('xsrfCookieName');
+  let headers = own('headers');
+  const auth = own('auth');
+  const baseURL = own('baseURL');
+  const allowAbsoluteUrls = own('allowAbsoluteUrls');
+  const url = own('url');
 
   newConfig.headers = headers = core_AxiosHeaders.from(headers);
 
   newConfig.url = buildURL(
-    buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls),
+    buildFullPath(baseURL, url, allowAbsoluteUrls),
     config.params,
     config.paramsSerializer
   );
@@ -46698,10 +47068,18 @@ function mergeConfig(config1, config2) {
   // Specifically not if we're in a web worker, or react-native.
 
   if (lib_platform.hasStandardBrowserEnv) {
-    withXSRFToken && utils.isFunction(withXSRFToken) && (withXSRFToken = withXSRFToken(newConfig));
+    if (utils.isFunction(withXSRFToken)) {
+      withXSRFToken = withXSRFToken(newConfig);
+    }
 
-    if (withXSRFToken || (withXSRFToken !== false && isURLSameOrigin(newConfig.url))) {
-      // Add xsrf header
+    // Strict boolean check — prevents proto-pollution gadgets (e.g. Object.prototype.withXSRFToken = 1)
+    // and misconfigurations (e.g. "false") from short-circuiting the same-origin check and leaking
+    // the XSRF token cross-origin. See GHSA-xx6v-rp6x-q39c.
+    const shouldSendXSRF =
+      withXSRFToken === true ||
+      (withXSRFToken == null && isURLSameOrigin(newConfig.url));
+
+    if (shouldSendXSRF) {
       const xsrfValue = xsrfHeaderName && xsrfCookieName && cookies.read(xsrfCookieName);
 
       if (xsrfValue) {
@@ -46713,7 +47091,7 @@ function mergeConfig(config1, config2) {
   return newConfig;
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/adapters/xhr.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/adapters/xhr.js
 
 
 
@@ -46937,7 +47315,7 @@ const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
     });
   });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/composeSignals.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/composeSignals.js
 
 
 
@@ -46995,7 +47373,7 @@ const composeSignals = (signals, timeout) => {
 
 /* harmony default export */ const helpers_composeSignals = (composeSignals);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/trackStream.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/trackStream.js
 const streamChunk = function* (chunk, chunkSize) {
   let len = chunk.byteLength;
 
@@ -47086,7 +47464,7 @@ const trackStream = (stream, chunkSize, onProgress, onFinish) => {
   );
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/adapters/fetch.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/adapters/fetch.js
 
 
 
@@ -47151,14 +47529,20 @@ const factory = (env) => {
     test(() => {
       let duplexAccessed = false;
 
-      const hasContentType = new Request(lib_platform.origin, {
+      const request = new Request(lib_platform.origin, {
         body: new fetch_ReadableStream(),
         method: 'POST',
         get duplex() {
           duplexAccessed = true;
           return 'half';
         },
-      }).headers.has('Content-Type');
+      });
+
+      const hasContentType = request.headers.has('Content-Type');
+
+      if (request.body != null) {
+        request.body.cancel();
+      }
 
       return duplexAccessed && !hasContentType;
     });
@@ -47302,6 +47686,19 @@ const factory = (env) => {
       // see https://github.com/cloudflare/workerd/issues/902
       const isCredentialsSupported = isRequestSupported && 'credentials' in Request.prototype;
 
+      // If data is FormData and Content-Type is multipart/form-data without boundary,
+      // delete it so fetch can set it correctly with the boundary
+      if (utils.isFormData(data)) {
+        const contentType = headers.getContentType();
+        if (
+          contentType &&
+          /^multipart\/form-data/i.test(contentType) &&
+          !/boundary=/i.test(contentType)
+        ) {
+          headers.delete('content-type');
+        }
+      }
+
       const resolvedOptions = {
         ...fetchOptions,
         signal: composedSignal,
@@ -47418,7 +47815,7 @@ const adapter = getFetch();
 
 /* harmony default export */ const adapters_fetch = ((/* unused pure expression or super */ null && (adapter)));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/adapters/adapters.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/adapters/adapters.js
 
 
 
@@ -47550,7 +47947,7 @@ function getAdapter(adapters, config) {
   adapters: knownAdapters,
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/dispatchRequest.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/dispatchRequest.js
 
 
 
@@ -47629,7 +48026,7 @@ function dispatchRequest(config) {
   );
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/validator.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/validator.js
 
 
 
@@ -47718,7 +48115,9 @@ function assertOptions(options, schema, allowUnknown) {
   let i = keys.length;
   while (i-- > 0) {
     const opt = keys[i];
-    const validator = schema[opt];
+    // Use hasOwnProperty so a polluted Object.prototype.<opt> cannot supply
+    // a non-function validator and cause a TypeError. See GHSA-q8qp-cvcw-x6jj.
+    const validator = Object.prototype.hasOwnProperty.call(schema, opt) ? schema[opt] : undefined;
     if (validator) {
       const value = options[opt];
       const result = value === undefined || validator(value, opt, options);
@@ -47741,7 +48140,7 @@ function assertOptions(options, schema, allowUnknown) {
   validators,
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/core/Axios.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/core/Axios.js
 
 
 
@@ -47790,13 +48189,29 @@ class Axios {
         Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
 
         // slice off the Error: ... line
-        const stack = dummy.stack ? dummy.stack.replace(/^.+\n/, '') : '';
+        const stack = (() => {
+          if (!dummy.stack) {
+            return '';
+          }
+
+          const firstNewlineIndex = dummy.stack.indexOf('\n');
+
+          return firstNewlineIndex === -1 ? '' : dummy.stack.slice(firstNewlineIndex + 1);
+        })();
         try {
           if (!err.stack) {
             err.stack = stack;
             // match without the 2 top stack lines
-          } else if (stack && !String(err.stack).endsWith(stack.replace(/^.+\n.+\n/, ''))) {
-            err.stack += '\n' + stack;
+          } else if (stack) {
+            const firstNewlineIndex = stack.indexOf('\n');
+            const secondNewlineIndex =
+              firstNewlineIndex === -1 ? -1 : stack.indexOf('\n', firstNewlineIndex + 1);
+            const stackWithoutTwoTopLines =
+              secondNewlineIndex === -1 ? '' : stack.slice(secondNewlineIndex + 1);
+
+            if (!String(err.stack).endsWith(stackWithoutTwoTopLines)) {
+              err.stack += '\n' + stack;
+            }
           }
         } catch (e) {
           // ignore the case where "stack" is an un-writable property
@@ -47980,8 +48395,6 @@ utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData
 });
 
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  /*eslint func-names:0*/
-
   function generateHTTPMethod(isForm) {
     return function httpMethod(url, data, config) {
       return this.request(
@@ -48006,7 +48419,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 /* harmony default export */ const core_Axios = (Axios);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/cancel/CancelToken.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/cancel/CancelToken.js
 
 
 
@@ -48143,7 +48556,7 @@ class CancelToken {
 
 /* harmony default export */ const cancel_CancelToken = (CancelToken);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/spread.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/spread.js
 
 
 /**
@@ -48173,7 +48586,7 @@ function spread(callback) {
   };
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/isAxiosError.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/isAxiosError.js
 
 
 
@@ -48189,7 +48602,7 @@ function isAxiosError(payload) {
   return utils.isObject(payload) && payload.isAxiosError === true;
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/helpers/HttpStatusCode.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/helpers/HttpStatusCode.js
 const HttpStatusCode = {
   Continue: 100,
   SwitchingProtocols: 101,
@@ -48268,7 +48681,7 @@ Object.entries(HttpStatusCode).forEach(([key, value]) => {
 
 /* harmony default export */ const helpers_HttpStatusCode = (HttpStatusCode);
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.13.6/node_modules/axios/lib/axios.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/axios@1.15.2/node_modules/axios/lib/axios.js
 
 
 
