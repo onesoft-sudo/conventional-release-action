@@ -1,6 +1,6 @@
 # Conventional Release Action
 
-A GitHub Action to automate the conventional release workflow.
+A GitHub Action to automate release creation based on the OSN-extension of [Conventional Commits](https://www.conventionalcommits.org/) Spec.
 
 ## Features
 
